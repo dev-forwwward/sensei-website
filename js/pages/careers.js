@@ -306,6 +306,14 @@ async function trailImage() {
 
 // runBlocks is passed in by script-loader.js (cache-busted import of utils/run-blocks.js)
 export function careersInit({ runBlocks }) {
+    // Old inline page code still in Webflow? Its top-level `const initProcessTimeline`
+    // lives in the shared global scope, visible from here. Skip so nothing runs twice;
+    // this lets main be pushed before or after the Webflow page code is swapped.
+    if (typeof initProcessTimeline !== 'undefined') {
+        console.info('[careers] old inline page code still in Webflow — skipping careersInit()');
+        return;
+    }
+
     runBlocks('careers', {
         accordions,
         benefitsSwiper,
