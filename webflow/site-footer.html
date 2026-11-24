@@ -21,13 +21,14 @@
 <!-- Swiper (swiper) -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> -->
 
-<!-- FWD GitHub Repo Scripts (?dev=true → local Live Server on :5500) -->
+<!-- FWD GitHub Repo Scripts (?dev=true → local Live Server on :5500; version = window.FWD_VERSION from the head) -->
 <script>
 (function () {
   var isDev = new URLSearchParams(window.location.search).get('dev') === 'true';
 
   var localSrc = 'http://127.0.0.1:5500/js/script-loader.js?v=' + Date.now();
-  var cdnSrc = 'https://cdn.jsdelivr.net/gh/dev-forwwward/sensei-website@main/js/script-loader.js?v=' + Date.now();
+  // Version comes from window.FWD_VERSION, set in the site head snippet
+  var cdnSrc = 'https://cdn.jsdelivr.net/gh/dev-forwwward/sensei-website@' + window.FWD_VERSION + '/js/script-loader.js';
 
   var script = document.createElement('script');
   script.type = 'module';

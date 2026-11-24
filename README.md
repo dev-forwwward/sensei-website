@@ -1,6 +1,6 @@
 # Sensei Website
 
-Custom JS/CSS for the **Sensei 2026** Webflow site (`sensei-staging-2026`), served via jsDelivr and loaded from Webflow's site custom code. Built on Forwwward's [White-label Defaults](https://github.com/dev-forwwward/White-label-defaults) setup. Nothing is built or bundled: the CDN serves this repo directly, so **every push to `main` is a production deploy**.
+Custom JS/CSS for the **Sensei 2026** Webflow site (`sensei-staging-2026`), served via jsDelivr and loaded from Webflow's site custom code. Built on Forwwward's [White-label Defaults](https://github.com/dev-forwwward/White-label-defaults) setup. Nothing is built or bundled: the CDN serves this repo directly, **pinned to a commit hash** (see Deploying).
 
 ## Webflow custom code
 
@@ -16,6 +16,16 @@ The exact code to paste into Webflow (Site settings → Custom code) is kept in 
 - Vendor CSS (Swiper, …) → `@import` at the top of `css/styles.css`.
 
 `css/styles.css` is loaded render-blocking from the site head (`document.write`), so page CSS applies before first paint like the inline `<style>` it replaced. Local `@import`s carry a content hash (`?v=…`), stamped by [`scripts/version-css-imports.js`](scripts/version-css-imports.js) in CI, so browsers never keep stale page CSS.
+
+## Deploying
+
+Webflow loads the repo from jsDelivr **at an exact commit**, set once in `window.FWD_VERSION` at the top of the site head snippet. The head CSS loader and the footer JS loader both read it.
+
+1. Push to `main`.
+2. `git rev-parse origin/main` → paste the hash into the `FWD_VERSION` line in Webflow → Site settings → Custom code → Head code.
+3. Publish.
+
+Why not `@main`: jsDelivr caches branch URLs on its side and kept serving a mix of old and new files after pushes, even after purging. Commit URLs are immutable, so the site always gets exactly one consistent version, and rolling back = pasting an older hash.
 
 Add `?dev=true` to any page URL to load `css/` and `js/` from a local server on `http://127.0.0.1:5500` (e.g. VS Code Live Server) instead of jsDelivr.
 

@@ -60,6 +60,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" /> -->
 <!-- <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.4/dist/lenis.css"> -->
 
+<!-- FWD repo version ─ the ONE line to change after each push ─────────────────────────
+     Commit hash of github.com/dev-forwwward/sensei-website to serve (head CSS + footer JS).
+     Get it with: git rev-parse origin/main
+     Commit URLs on jsDelivr are immutable, so they're always exactly that version
+     (the @main branch URL served stale/mixed files even after purging). -->
+<script>window.FWD_VERSION = 'f9ff2fc24762e15557dd80c74fc5d4481400244d';</script>
+
 <!-- FWD GitHub Repo Styles (?dev=true → local Live Server on :5500)
      document.write makes this a normal parser-inserted stylesheet: every browser waits
      for it before first paint, so page CSS that hides elements until JS reveals them
@@ -67,16 +74,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script>
 (function () {
   var isDev = new URLSearchParams(window.location.search).get('dev') === 'true';
-  var v = Date.now();
 
-  var localHref = 'http://127.0.0.1:5500/css/styles.css?v=' + v;
-  var cdnHref = 'https://cdn.jsdelivr.net/gh/dev-forwwward/sensei-website@main/css/styles.css?v=' + v;
+  var localHref = 'http://127.0.0.1:5500/css/styles.css?v=' + Date.now();
+  var cdnHref = 'https://cdn.jsdelivr.net/gh/dev-forwwward/sensei-website@' + window.FWD_VERSION + '/css/styles.css';
 
-  if (isDev) {
-    // Local server down → fall back to the CDN copy
-    document.write('<link rel="stylesheet" href="' + localHref + '" onerror="console.warn(\'Local CSS failed, loading CDN fallback...\');var l=document.createElement(\'link\');l.rel=\'stylesheet\';l.href=\'' + cdnHref + '\';document.head.appendChild(l);">');
-  } else {
-    document.write('<link rel="stylesheet" href="' + cdnHref + '">');
-  }
+  // Dev only: local server down → load the CDN copy instead
+  window.fwdCssFallback = function () {
+    console.warn('Local CSS failed, loading CDN fallback...');
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = cdnHref;
+    document.head.appendChild(link);
+  };
+
+  document.write(isDev
+    ? '<link rel="stylesheet" href="' + localHref + '" onerror="fwdCssFallback()">'
+    : '<link rel="stylesheet" href="' + cdnHref + '">');
 })();
 </script>
