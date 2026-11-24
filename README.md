@@ -146,6 +146,10 @@ _No inline section comments found — see source for details._
 - Set active classes
 - CAREERS: Fade in on scroll — ScrollTrigger.batch
 
+### [`js/pages/fwd-teams.js`](js/pages/fwd-teams.js) — `fwdTeamsInit()`
+
+- in the sticky column. When a block crosses the middle of the screen, the column steps
+
 ### [`js/pages/how-it-works.js`](js/pages/how-it-works.js) — `howItWorksInit()`
 
 - HOW IT WORKS: "See" + "Understand" accordions open vertically on desktop
@@ -195,7 +199,15 @@ Root stylesheet.
 
 Imported by `css/styles.css`.
 
+### [`css/pages/fwd-teams.css`](css/pages/fwd-teams.css)
+
+Imported by `css/styles.css`.
+
 ### [`css/pages/how-it-works.css`](css/pages/how-it-works.css)
+
+Imported by `css/styles.css`.
+
+### [`css/pages/product.css`](css/pages/product.css)
 
 Imported by `css/styles.css`.
 
