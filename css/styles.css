@@ -13,7 +13,7 @@
 /* Page CSS (was in each page's head code) — scoped by html[data-wf-page], render-blocking */
 @import url('pages/careers.css?v=ad2175f8');
 @import url('pages/how-it-works.css?v=5ddea7cf');
-@import url('pages/fwd-teams.css?v=a5c11593');
+@import url('pages/fwd-teams.css?v=6e12ad59');
 
 
 /* FWD white-label defaults — disabled while Sensei runs its legacy menu / accordions.

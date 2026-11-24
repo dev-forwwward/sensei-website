@@ -1,12 +1,17 @@
 /*
 *   FWD TEAMS TEMPLATE (/fwd-teams/*) — "The answers" sticky images (Relume layout411)
 *
-*   Webflow's scroll interaction slid the image column continuously over the whole
-*   section, so the image never lined up with the text block being read (half of two
-*   images in the frame between blocks). Now each text block selects its image:
-*   js/pages/fwd-teams.js sets --layout411-step when a block reaches the middle of the
-*   screen, and the column moves exactly one slot (each slot is 100vh, the frame shows
-*   its top 80vh with the image centred — Relume's own sizing).
+*   Goal: each image sits beside its text block and both move together.
+*
+*   Webflow's scroll interaction moved the image column from 0 to -75% over the whole
+*   time the section is on screen (section height + one screen), i.e. slower than the
+*   page, so the image drifted away from its text. The images can only line up while
+*   the panel is pinned, so the column has to cover its distance over exactly that
+*   range — from "section top at top of screen" to "section bottom at bottom of
+*   screen" — at 1:1 with the scroll. js/pages/fwd-teams.js writes that progress
+*   (0..1) into --layout411-progress; this moves the column by
+*   progress × (count - 1) slots. Relume's sizing (100vh text blocks, 100vh image slots
+*   shown through an 80vh frame at 10vh, image centred in it) makes the centres match.
 *
 *   Only where the sticky column exists (>= 768px; Relume hides it below).
 */
@@ -15,13 +20,6 @@
 	:where(html[data-wf-page="6aff32ae018246d1af34fa21"]) .layout411_images-wrapper {
 		/* Neutralise Webflow's scroll interaction (it writes an inline transform) */
 		transform: none !important;
-		translate: 0 calc(var(--layout411-step, 0) * -100% / var(--layout411-count, 1));
-		transition: translate 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-	}
-}
-
-@media screen and (min-width: 768px) and (prefers-reduced-motion: reduce) {
-	:where(html[data-wf-page="6aff32ae018246d1af34fa21"]) .layout411_images-wrapper {
-		transition: none;
+		translate: 0 calc(var(--layout411-progress, 0) * -100% * (var(--layout411-count, 1) - 1) / var(--layout411-count, 1));
 	}
 }
