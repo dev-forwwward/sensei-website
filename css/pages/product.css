@@ -21,3 +21,50 @@ html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .testimonial51_card {
 	height: 100%;
 	justify-content: flex-start;
 }
+
+
+/*
+*   PRODUCT — rotating words in the "Neptune runs on…" headline
+*
+*   The white box (.fwd_rotating-word-wrapper) and its width per breakpoint come from
+*   Webflow. js/pages/product.js keeps the first word in place as an invisible sizer
+*   (box height + screen reader text) and adds a track of rows that slides up inside
+*   the box. Before JS runs, the box shows the first word as Webflow renders it.
+*
+*   Scope wrapped in :where() so every rule keeps the specificity Webflow's would have.
+*/
+
+:where(html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"]) .fwd_rotating-word-wrapper {
+	position: relative;
+	overflow: hidden;
+	border-radius: 4px;
+}
+
+/* Box height = 1.25 × the font size (Figma: 60px box for 48px type). Webflow's line-height
+   of 1 clipped descenders, and the previous word's "y"/"g" bled into the next row. Set
+   on the Webflow word too, so the box has its final height before JS runs. */
+:where(html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"]) .fwd_rotating-word-wrapper > .section_content7-text {
+	line-height: 1.25;
+}
+
+:where(html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"]) .rotating-word_sizer {
+	opacity: 0;
+}
+
+:where(html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"]) .rotating-word_track {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	will-change: transform;
+}
+
+/* One row = one box height; the word centred like Webflow centres the first one */
+:where(html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"]) .rotating-word_row {
+	flex: 0 0 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	white-space: nowrap;
+	color: var(--colors--olive-40);
+}

@@ -163,6 +163,19 @@ _No inline section comments found — see source for details._
 - One panel is always open: clicking the open panel's header does nothing
 - Hold both panels' content at the open width while the widths change
 
+### [`js/pages/product.js`](js/pages/product.js) — `productInit()`
+
+- PRODUCT: rotating words in the "Neptune runs on the Sensei Retail World Model…" headline
+- first word inside. Every word rotates through the box, sliding up one row at a time
+- the list below is used.
+- The first item stays in place, invisible: it keeps the box's height and is what
+- screen readers read, so the sentence doesn't change under them. Extra Webflow
+- items are only the source of the word list.
+- Track: one row per word, plus a copy of the first one so the loop can slide up
+- into it and jump back to the start without a visible cut
+- Reduced motion: the first word, no rotation
+- Only run while the headline is on screen
+
 ### [`js/utils/helpers.js`](js/utils/helpers.js) — `runBlocks()`, `loadScript()`
 
 - Shared helpers, passed to every init function by script-loader.js

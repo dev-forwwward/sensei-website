@@ -27,6 +27,7 @@ const pages = {
     '6ae1d1264629dc4e90df3ab1': { path: 'pages/careers', exportName: 'careersInit' }, // /careers
     '6aec7413ae73f59f7e35fef4': { path: 'pages/how-it-works', exportName: 'howItWorksInit' }, // /how-it-works
     '6aff32ae018246d1af34fa21': { path: 'pages/fwd-teams', exportName: 'fwdTeamsInit' }, // /fwd-teams/* (CMS template)
+    '6aeb1c30a345c0ff0c02c6f7': { path: 'pages/product', exportName: 'productInit' }, // /product
 };
 
 const pageModule = pages[document.documentElement.dataset.wfPage];
