@@ -152,16 +152,16 @@ _No inline section comments found — see source for details._
 
 ### [`js/pages/how-it-works.js`](js/pages/how-it-works.js) — `howItWorksInit()`
 
-- HOW IT WORKS: "See" + "Understand" accordions open vertically on desktop
+- HOW IT WORKS: "See" + "Understand" accordions open sideways on desktop
+- vertical one. Webflow's desktop interaction was broken: the panel and its header
+- both carry a click trigger, so one click opened the panel and closed it again, and
+- the content reflowed into a narrow column while the width animated. On desktop we
 - take over the clicks — in the capture phase, so the Webflow interaction never sees
-- them — and open/close panels by height, like the tablet/mobile interaction already
-- does. Below 992px nothing changes: Webflow's own interaction keeps running.
-- Webflow marks the initially open panel with the .active combo class
-- Desktop start state: open panel auto height, others closed
-- Keep the clicked header in view when a panel above it just closed
-- One panel is always open, like the tablet/mobile interaction: clicking the
-- open panel's header does nothing
-- panels still navigate: stopPropagation doesn't cancel the default action.
+- them — and animate the widths with GSAP, holding the content at its open width
+- Webflow's .active combo class, which sets its width in CSS. Below 992px nothing
+- Desktop start state: drop any inline sizes a Webflow interaction left behind
+- One panel is always open: clicking the open panel's header does nothing
+- Hold both panels' content at the open width while the widths change
 
 ### [`js/utils/helpers.js`](js/utils/helpers.js) — `runBlocks()`, `loadScript()`
 
