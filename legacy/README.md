@@ -59,7 +59,7 @@ If that sandbox is ever deleted, those pages lose their animations, so copies we
 
 ## Known issues in the legacy code (not fixed yet)
 
-- GSAP is loaded three times at site level (3.12.5 → 3.11.3 → 3.12.5) and again on several pages.
+- GSAP was loaded three times at site level (3.12.5 → 3.11.3 → 3.12.5); `webflow/site-footer.html` now loads it once. Several pages still load it again.
 - Home, Product, How it works and Company load jQuery 3.7.1 again on top of Webflow's own jQuery.
 - Pages load Swiper from `unpkg.com/swiper` with no version and Lottie from `lottie-player@latest`, so a new major release can break them without warning.
 - The values-tab code kills every ScrollTrigger that isn't part of the active tab, including ones created by page code.

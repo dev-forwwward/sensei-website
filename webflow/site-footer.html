@@ -1,14 +1,12 @@
 <!-- Source of truth: github.com/dev-forwwward/sensei-website → webflow/site-footer.html -->
 
 <!---------------------- GSAP + plugins (legacy site & page code rely on these globals) ---------------------->
+<!-- One GSAP build for everything (legacy loaded 3.12.5, then 3.11.3, then 3.12.5 again) -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
 <!-- Text split (pinned: same file unpkg.com/split-type resolved to) -->
 <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
-<!-- Legacy loaded GSAP a 3rd time before its testimonials block; kept so behaviour is unchanged -->
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script>
   gsap.registerPlugin(ScrollTrigger);
   gsap.registerPlugin(ScrollToPlugin);
