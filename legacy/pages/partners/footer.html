@@ -1,0 +1,209 @@
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<!------------- Marquee Investors ------------->
+<!------------- Quote Scroll Animation ------------->
+<script>
+  const elements = document.querySelectorAll('.partners-quote_text-wrapper');
+  if (elements) {
+    elements?.forEach((target) => {
+      const { words } = new SplitType(target, { tagName: 'span', types: 'words' });
+
+      const animationConfig = {
+        duration: 1,
+        opacity: 0.2,
+        ease: 'power1.inOut',
+        stagger: 0.1,
+        scrollTrigger: {
+          end: 'bottom 50%',
+          scrub: 2,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+          trigger: target,
+        },
+      };
+
+      gsap.from(words, animationConfig);
+      gsap.from('.partners-quote_icon', animationConfig);
+    });
+  }
+</script>
+<!------------- Quote Scroll Animation ------------->
+
+<!------------- Marquee Investors ------------->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const marqueeContainer = document.querySelector('.partners-intro-investors.marquee-container');
+    const marqueeContent = document.querySelector('.marquee-content');
+    const clientsList = document.querySelector('.clients-list');
+
+    // Clone the clients list multiple times to ensure smooth looping
+    const cloneCount = Math.ceil(window.innerWidth / clientsList.offsetWidth) + 1;
+    for (let i = 0; i < cloneCount; i++) {
+      const clone = clientsList.cloneNode(true);
+      marqueeContent.appendChild(clone);
+    }
+
+    // Set up the GSAP animation
+    let animation;
+    function setupMarquee() {
+      // Kill any existing animation
+      if (animation) animation.kill();
+
+      // Calculate the total width of all cloned lists
+      const totalWidth = marqueeContent.offsetWidth;
+
+      // Create the animation
+      animation = gsap.to(marqueeContent, {
+        x: -totalWidth / cloneCount,
+        ease: 'none',
+        duration: 10, // Adjust this value to control speed
+        repeat: -1,
+        onRepeat: () => {
+          gsap.set(marqueeContent, { x: 0 });
+        }
+      });
+    }
+
+    // Initial setup
+    setupMarquee();
+
+    // Pause on hover
+    marqueeContainer.addEventListener('mouseenter', () => {
+      gsap.to(animation, { timeScale: 0, duration: 0.5 });
+    });
+    marqueeContainer.addEventListener('mouseleave', () => {
+      gsap.to(animation, { timeScale: 1, duration: 0.5 });
+    });
+
+    // Function to call after resize with debounce
+    function callAfterResize(func, delay) {
+      let dc = gsap.delayedCall(delay || 0.2, func).pause(),
+          handler = () => dc.restart(true);
+      window.addEventListener("resize", handler);
+      return handler; // in case you want to remove the listener later
+    }
+
+    // Update on window resize
+    const resizeHandler = callAfterResize(setupMarquee, 0.1);
+  });
+</script>
+<!------------- Marquee Investors ------------->
+
+<!------------- Testimonials Swiper ------------->
+<style>
+.swiper.is-testimonials {
+	display: flex;
+}
+</style>
+
+<script>
+const swiperTestimonials = new Swiper('.swiper.is-testimonials', {
+  loop: true,
+  slidesPerView: "auto",
+  navigation: {
+    nextEl: '#testimonials-next',
+    prevEl: '#testimonials-prev',
+  },
+});
+</script>
+<!------------- Testimonials Swiper ------------->
+
+<!------------- Trusted animation------------->
+<script>
+if (window.innerWidth > 768) {
+  const whereWeGoTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.section_partners-trusted',
+      start: 'top 60%',
+      end: 'bottom 60%',
+      scrub: 2,
+    },
+  });
+
+  whereWeGoTl
+    .to('.partners-trusted_image', { top: '0' })
+    .to('.where-cover-image.is-1', { opacity: 0 }, 0)
+    .to('.where-cover-image.is-2', { opacity: 1 }, 0);
+}
+</script>
+<!------------- Trusted animation ------------->
+
+
+<!------------- Accordions ------------->
+<script>
+  const createAccordions = (targets, closeOtherTargets, callback) => {
+    if (!targets.length) return;
+
+    targets.forEach((accordion) => {
+      accordion.addEventListener('click', function () {
+        if (closeOtherTargets) {
+          targets.forEach((target) => {
+            if (target !== this) {
+              target.removeAttribute('aria-expanded');
+            }
+          });
+        }
+
+        this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+
+        if (callback) {
+          callback(this);
+        }
+      });
+    });
+  };
+
+  createAccordions(document.querySelectorAll('[data-accordion="why-sensei"]'), true);
+</script>
+<!------------- Accordions ------------->
+
+
+
+<!------------- Circle arrow move ------------->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  gsap.registerPlugin(ScrollTrigger);
+  
+  // Existing scroll animation
+  gsap.fromTo(".partners-cta-link", 
+    {
+    	x: window.innerWidth > 991 ? "-500%" : "0%",
+    },
+    {
+      scrollTrigger: {
+        trigger: ".section_partners-cta",
+        start: "top bottom",
+        end: "bottom center",
+        scrub: 1
+      },
+      x: "0%",
+      ease: "power1.inOut",
+    }
+  );
+
+  // Hover animation
+  const link = document.querySelector('.partners-cta-link');
+  
+// Create the hover animation but pause it initially
+const hoverAnimation = gsap.fromTo(link, 
+  {
+    rotation: 0,
+    backgroundColor: "transparent", // or any initial color
+  },
+  {
+    rotation: -45,
+    backgroundColor: "#1D1D1D", // Replace with your desired hover color
+    color: "#ECEBE4",
+    duration: 0.3,
+    paused: true,
+    ease: "power2.out"
+  }
+);
+
+  // Add event listeners for hover
+  link.addEventListener('mouseenter', () => hoverAnimation.play());
+  link.addEventListener('mouseleave', () => hoverAnimation.reverse());
+});
+</script>
+<!------------- Circle arrow move ------------->

@@ -1,0 +1,17 @@
+<!------------- Filter insights categories ------------->
+<style>
+.insights-tab.active {
+  background-color: var(--colors--beige-20); /* Example active background color */
+  color: var(--colors--olive-20) !important; /* Change text color */
+}
+</style>
+<script>
+const filters = document.querySelectorAll('.insights-tab');
+filters?.forEach(filter => {
+  filter.addEventListener('click', () => {
+    filters.forEach(f => f.classList.remove('active'));
+    filter.classList.add('active');
+  });
+});
+</script>
+<!------------- Filter insights categories ------------->

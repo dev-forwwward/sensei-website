@@ -1,0 +1,108 @@
+<!------------- Filter story categories ------------->
+<style>
+.story-tab.active {
+  background-color: var(--colors--beige-20); /* Example active background color */
+  color: var(--colors--olive-20) !important; /* Change text color */
+}
+</style>
+<script>
+// Select all tabs and testimonials
+const tabs = document.querySelectorAll('.story-tab');
+const testimonials = document.querySelectorAll('.stories-general-item');
+
+// Function to filter testimonials and set active tab
+function filterTestimonials(selectedCategory) {
+  // Remove active class from all tabs
+  tabs.forEach(tab => tab.classList.remove('active'));
+
+  // Add active class to the corresponding tab
+  const activeTab = document.querySelector(`.story-tab[data-tab="${selectedCategory}"]`);
+  if (activeTab) activeTab.classList.add('active');
+
+  // Hide and show testimonials based on selected category
+  gsap.to(testimonials, {
+    opacity: 0,
+    duration: 0.5,
+    onComplete: () => {
+      testimonials.forEach(testimonial => {
+        const testimonialCategory = testimonial.getAttribute('data-category');
+
+        // Show testimonials if they match the selected category or "all"
+        if (selectedCategory === 'all' || testimonialCategory === selectedCategory) {
+          gsap.set(testimonial, { display: 'block' }); // Ensure it's shown in the layout
+          gsap.to(testimonial, { opacity: 1, duration: 0.5 });
+        } else {
+          gsap.set(testimonial, { display: 'none' }); // Hide testimonials that don't match
+        }
+      });
+    }
+  });
+}
+
+// Set "All" as the default active tab on page load
+document.addEventListener('DOMContentLoaded', () => {
+  filterTestimonials('all'); // Trigger the filtering for the "all" tab
+});
+
+// Add click event listeners to each tab
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const selectedCategory = tab.getAttribute('data-tab');
+    filterTestimonials(selectedCategory); // Filter testimonials based on clicked tab
+  });
+});
+</script>
+<!------------- Filter story categories ------------->
+
+
+<!------------- Marquee Clients ------------->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const marqueeContainer = document.querySelector('.home-intro-clients.marquee-container');
+  const marqueeContent = document.querySelector('.marquee-content');
+  const clientsList = document.querySelector('.clients-list');
+  
+  // Clone the clients list multiple times to ensure smooth looping
+  const cloneCount = Math.ceil(window.innerWidth / clientsList.offsetWidth) + 1;
+  for (let i = 0; i < cloneCount; i++) {
+    const clone = clientsList.cloneNode(true);
+    marqueeContent.appendChild(clone);
+  }
+
+  // Set up the GSAP animation
+  let animation;
+  function setupMarquee() {
+    // Kill any existing animation
+    if (animation) animation.kill();
+
+    // Calculate the total width of all cloned lists
+    const totalWidth = marqueeContent.offsetWidth;
+
+    // Create the animation
+    animation = gsap.to(marqueeContent, {
+      x: -totalWidth / cloneCount,
+      ease: 'none',
+      duration: 10, // Adjust this value to control speed
+      repeat: -1,
+      onRepeat: () => {
+        gsap.set(marqueeContent, { x: 0 });
+      }
+    });
+  }
+
+  // Initial setup
+  setupMarquee();
+
+  // Pause on hover
+  marqueeContainer.addEventListener('mouseenter', () => {
+    gsap.to(animation, { timeScale: 0, duration: 0.5 });
+  });
+  marqueeContainer.addEventListener('mouseleave', () => {
+    gsap.to(animation, { timeScale: 1, duration: 0.5 });
+  });
+
+  // Update on window resize
+  window.addEventListener('resize', gsap.utils.debounce(setupMarquee, 100));
+});
+</script>
+<!------------- Marquee Clients ------------->

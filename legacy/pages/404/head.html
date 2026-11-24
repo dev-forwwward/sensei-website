@@ -1,0 +1,49 @@
+<style>
+.error-marquee-container {
+    display: flex;
+    width: calc(200%); /* Double the width to fit both tracks */
+    animation: marquee 20s linear infinite;
+}
+
+.error-marquee-track {
+    display: flex;
+    flex: 0 0 50%; /* Each track takes up 50% of the container */
+}
+
+.error-marquee-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px; /* Adjust the size as needed */
+}
+
+.img-outline-error {
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.img-filled-error {
+    display: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.error-marquee-item:hover .img-outline-error {
+    opacity: 0;
+}
+
+.error-marquee-item:hover .img-filled-error {
+    display: block;
+    opacity: 1;
+}
+
+/* Animation for the marquee effect */
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+</style>

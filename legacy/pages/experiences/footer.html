@@ -1,0 +1,91 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/ScrollToPlugin.min.js"></script>
+
+<script src="https://xq5gdz.csb.app/retailers.js"></script>
+
+
+
+<!------------- Counter ------------->
+<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/neueworld/WebFlow-Tools@main/number-counter-v1.0.0.0.js'></script>
+<!------------- Counter ------------->
+
+
+<!------------- Circle arrow move ------------->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  gsap.registerPlugin(ScrollTrigger);
+  
+  // Existing scroll animation
+  gsap.fromTo(".industries-cta-link", 
+    {
+      x: "-600%",
+    },
+    {
+      scrollTrigger: {
+        trigger: ".section_experience-cta",
+        start: "top bottom",
+        end: "bottom center",
+        scrub: 1
+      },
+      x: "0%",
+      ease: "power1.inOut",
+    }
+  );
+
+  // Hover animation
+  const link = document.querySelector('.industries-cta-link');
+  
+// Create the hover animation but pause it initially
+const hoverAnimation = gsap.fromTo(link, 
+  {
+    rotation: 0,
+    backgroundColor: "transparent", // or any initial color
+  },
+  {
+    rotation: -45,
+    backgroundColor: "#1D1D1D", // Replace with your desired hover color
+    color: "#ECEBE4",
+    duration: 0.3,
+    paused: true,
+    ease: "power2.out"
+  }
+);
+
+  // Add event listeners for hover
+  link.addEventListener('mouseenter', () => hoverAnimation.play());
+  link.addEventListener('mouseleave', () => hoverAnimation.reverse());
+});
+</script>
+<!------------- Circle arrow move ------------->
+
+<!------------- Cards scroll into view ------------->
+<script>
+// Make sure GSAP and ScrollTrigger are loaded
+gsap.registerPlugin(ScrollTrigger);
+
+// Wait for the window to fully load before running the animations
+window.addEventListener('load', function() {
+  // Select all collection items
+  const items = gsap.utils.toArray(".experience-solutions-item");
+
+  items.forEach((item, index) => {
+    // Apply an animation to each item with a staggered delay based on its index
+    gsap.from(item, {
+      opacity: 0,
+      y: 50, // Cards will animate up from below
+      duration: 1.2, // Duration of the animation for each item
+      ease: "power3.out", // Smooth easing
+      scrollTrigger: {
+        trigger: item,
+        start: "top 90%", // When the top of the item hits 90% of the viewport
+        toggleActions: "play none none none", // Only play the animation once
+      },
+      delay: index * 0.2, // Stagger the delay for each item
+    });
+  });
+});
+</script>
+<!------------- Cards scroll into view ------------->
+
+
+
+

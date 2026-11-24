@@ -1,0 +1,52 @@
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<style>
+:root {
+  --swiper-pagination-color: #1D1D1D;
+  --swiper-pagination-bullet-size: 10px;
+  --swiper-pagination-bullet-width: 10px;
+  --swiper-pagination-bullet-height: 10px;
+  --swiper-pagination-bullet-inactive-color: #A5A99F;
+  --swiper-pagination-bullet-inactive-opacity: 1;
+  --swiper-pagination-bullet-opacity: 1;
+  --swiper-pagination-bullet-horizontal-gap: 4px;
+}
+
+@media only screen and (max-width: 767px) {
+  :root {
+    --swiper-pagination-bullet-size: 4px;
+    --swiper-pagination-bullet-width: 4px;
+    --swiper-pagination-bullet-height: 4px;
+  }
+}
+
+.swiper-pagination-bullet {
+	border-radius: 0px;
+}
+
+.feature-item.swiper-slide {
+  opacity: 0.5;
+}
+
+.feature-item.swiper-slide.swiper-slide-active {
+  opacity: 1;
+}
+
+.dropdown-toggle-values-extra.w-dropdown-toggle.w--open .is-open{
+  display: none;
+}
+
+.dropdown-toggle-values-extra.w-dropdown-toggle.w--open .is-close{
+  display: block;
+}
+
+.dropdown-toggle-values-extra.w-dropdown-toggle .is-inside-text{
+  display: none;
+}
+
+.dropdown-toggle-values-extra.w-dropdown-toggle.w--open .is-inside-text{
+  display: block;
+}
+</style>

@@ -1,0 +1,537 @@
+<script src="https://xq5gdz.csb.app/industries.js"></script>
+<script src="https://xq5gdz.csb.app/industries-title.js"></script>
+
+<!------------- Testimonials ------------->
+<script>
+// Select the first and second elements with class 'story-item'
+const firstStoryItem = document.querySelector('.story-item');
+const secondStoryItem = document.querySelector('.story-item:nth-child(2)');
+
+// Add flex-basis: 100% to the first item
+if (firstStoryItem && secondStoryItem) {
+  secondStoryItem.style.flexBasis = '100%';
+
+  // Add event listeners to the second item for mouseover
+  firstStoryItem.addEventListener('mouseenter', function() {
+    // Remove flex-basis: 100% from the first item when hovering over the second item
+    secondStoryItem.style.flexBasis = '';
+  });
+
+  // Add event listeners to the second item for mouseout
+  firstStoryItem.addEventListener('mouseleave', function() {
+    // Restore flex-basis: 100% to the first item when the mouse leaves the second item
+    secondStoryItem.style.flexBasis = '100%';
+  });
+}
+</script>
+<!------------- Testimonials ------------->
+
+<!------------- Circle arrow move ------------->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  gsap.registerPlugin(ScrollTrigger);
+  
+  // Existing scroll animation
+  gsap.fromTo(".industries-cta-link", 
+    {
+    	x: window.innerWidth > 991 ? "-600%" : "0%",
+    },
+    {
+      scrollTrigger: {
+        trigger: ".section_industry-cta",
+        start: "top bottom",
+        end: "bottom center",
+        scrub: 1
+      },
+      x: "0%",
+      ease: "power1.inOut",
+    }
+  );
+
+  // Hover animation
+  const link = document.querySelector('.industries-cta-link');
+  
+// Create the hover animation but pause it initially
+const hoverAnimation = gsap.fromTo(link, 
+  {
+    rotation: 0,
+    backgroundColor: "transparent", // or any initial color
+  },
+  {
+    rotation: -45,
+    backgroundColor: "#1D1D1D", // Replace with your desired hover color
+    color: "#ECEBE4",
+    duration: 0.3,
+    paused: true,
+    ease: "power2.out"
+  }
+);
+
+  // Add event listeners for hover
+  link.addEventListener('mouseenter', () => hoverAnimation.play());
+  link.addEventListener('mouseleave', () => hoverAnimation.reverse());
+});
+</script>
+<!------------- Circle arrow move ------------->
+
+<!------------- Text changing word ------------->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Wait for Webflow's dynamic content to fully load
+    Webflow.push(function() {
+        let items = $(".marquee_item-snap");  // Get all collection items
+        let typingDelay = 100;  // Delay between typing each character
+        let erasingDelay = 50;  // Delay between erasing each character
+        let newTextDelay = 1000; // Delay before starting to type the next word
+        let currentItemIndex = 0; // Start with the first item
+        let currentCharIndex = 0; // Start with the first character of the word
+        let isErasing = false;
+
+        // Function to start typing and erasing words
+        function typeWriterEffect() {
+            if (currentItemIndex >= items.length) {
+                currentItemIndex = 0; // Reset to first item after last one
+            }
+
+            const currentItem = items.eq(currentItemIndex);  // Get the current word item
+            const textElement = currentItem.find(".typewriter-content"); // The element inside the item with text to animate
+            const text = textElement.attr('data-text');    // Get the word's text content from a custom attribute
+
+            // If we are typing
+            if (!isErasing) {
+                if (currentCharIndex < text.length) {
+                    textElement.text(text.substring(0, currentCharIndex + 1));  // Append next character
+                    currentCharIndex++;
+                    setTimeout(typeWriterEffect, typingDelay);  // Continue typing
+                } else {
+                    isErasing = true; // Switch to erasing after typing the whole word
+                    setTimeout(typeWriterEffect, newTextDelay);  // Wait before starting to erase
+                }
+            } 
+            // If we are erasing
+            else {
+                if (currentCharIndex > 0) {
+                    textElement.text(text.substring(0, currentCharIndex - 1));  // Remove characters
+                    currentCharIndex--;
+                    setTimeout(typeWriterEffect, erasingDelay);  // Continue erasing
+                } else {
+                    // Move to the next word
+                    isErasing = false; 
+                    currentItemIndex++;  // Go to the next item
+                    currentCharIndex = 0;  // Reset character index for next word
+                    setTimeout(typeWriterEffect, typingDelay);  // Start typing the next word
+                }
+            }
+        }
+
+        // Prepare items by storing their text content in a custom attribute
+        /*items.each(function() {
+            let textElement = $(this).find(".typewriter-content");
+            textElement.attr('data-text', textElement.text().trim());  // Store original text content
+            console.log(textElement.text());
+            textElement.text('');  // Clear text content initially
+        });*/
+
+        // Start the typewriter effect
+        typeWriterEffect();
+    });
+});
+</script>
+<!------------- Text changing word ------------->
+
+
+<!------------- Buttons and images steps ------------->
+<script>
+// Select all step buttons
+const steps = document.querySelectorAll('.step');
+
+// Function to hide all highlights and reset animations
+function hideAllHighlights() {
+    document.querySelectorAll('.highlight').forEach(highlight => {
+        highlight.style.display = 'none'; // Hide all highlights
+        
+        // Reset the animations when hiding highlights
+        gsap.set('.label-supermarkets-zoom', { y: 0 }); // Reset the label position
+        gsap.set('.icon-zoom', { scale: 0 }); // Reset the icon scale
+    });
+}
+
+// Function to reset all buttons to the default state
+function resetButtons() {
+    steps.forEach(step => {
+        // Reset color, size, and arrow visibility
+        gsap.to(step.querySelectorAll('.paragraph-p'), { color: '#A5A99F', fontSize: '0.875rem', transformOrigin: 'left center', duration: 0.3 });
+        gsap.to(step.querySelector('.subtitle-arrow'), { opacity: 0, duration: 0.3 });
+        gsap.to(step, { x: 0, duration: 0.3 }); // Reset position
+    });
+}
+
+// Function to activate a specific step
+function activateStep(step) {
+    // Hide all highlights
+    hideAllHighlights();
+    
+    // Show the corresponding highlight as flex
+    const highlightId = step.getAttribute('data-highlight');
+    const highlightElement = document.getElementById(highlightId);
+    highlightElement.style.display = 'flex';
+    
+    // Animate the label-supermarkets-zoom to move up
+    gsap.fromTo(
+        highlightElement.querySelectorAll('.label-supermarkets-zoom'),
+        { y: 50 }, // Start position (below, out of view)
+        { y: 0, duration: 1, ease: 'power2.out', stagger: 0.2 } // End position (in view)
+    );
+    
+    // Animate the icon-zoom to scale from 0 to 1
+    gsap.fromTo(
+        highlightElement.querySelector('.icon-zoom'),
+        { scale: 0 }, // Start scale
+        { scale: 1, duration: 0.8, ease: 'power2.out' } // End scale
+    );
+
+    // Reset all buttons to default before activating the clicked one
+    resetButtons();
+    
+    // Activate the clicked button: change color, size, show arrow, and move right
+    gsap.to(step.querySelectorAll('.paragraph-p'), { 
+        color: '#1D1D1D', 
+        fontSize: '1.2rem', 
+        transformOrigin: 'left center', // Growth anchor point at middle left
+        duration: 0.5 
+    });
+    gsap.to(step.querySelector('.subtitle-arrow'), { opacity: 1, duration: 0.5 });
+    gsap.to(step, { x: 20, duration: 0.5 }); // Move button to the right
+}
+
+// Add click events to each step
+steps.forEach(step => {
+    step.addEventListener('click', function() {
+        activateStep(this);
+    });
+});
+
+// Activate the first step by default when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    if (steps.length > 0) {
+        activateStep(steps[0]); // Activate the first step
+    }
+});
+</script>
+
+<!------------- Buttons and images steps ------------->
+
+<!------------- Swiper concept ------------->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+const swiper = new Swiper('.swiper.is-supermarkets', {
+  slidesPerView: 1, // Show only one slide at a time
+  loop: true, // Enable loop if desired
+  effect: 'flip', // Use the 'flip' effect for the transition
+  grabCursor: true, // Changes cursor when hovering over the Swiper
+  pagination: {
+    el: '.swiper-pagination',
+    type: 'fraction', // Changes the pagination to "1/number of slides"
+    formatFractionCurrent: (number) => ('0' + number).slice(-2), // Optional: Adds a leading zero
+    formatFractionTotal: (number) => ('0' + number).slice(-2), // Optional: Adds a leading zero
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  flipEffect: {
+    slideShadows: false, // Disables shadow effect during flip (optional)
+    rotate: 30, // Degrees of rotation during the flip
+  },
+});
+</script>
+<style>
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  content: ''; /* Remove default arrow */
+}
+.swiper-button-prev.is-supermarkets,
+.swiper-button-next.is-supermarkets {
+  color: var(--colors--black); /* Remove any color settings */
+  margin-top: 0px;
+  /*top: 60%;*/
+  width: 24px;
+  height: 24px;
+}
+.swiper-button-prev {
+	left: 10%;
+}
+.swiper-button-next {
+	right: 10%;
+}
+.swiper-pagination-fraction {
+	color: var(--colors--olive-30);
+  /*bottom: 10px;*/
+  margin-top: 50px;
+  position: relative !important;
+}
+.swiper-pagination-total {
+	color: var(--colors--olive-30);
+}
+.swiper.is-supermarkets {
+  perspective: 1000px; /* Adds perspective for a better 3D effect */
+}
+.swiper-slide.is-supermarkets {
+  backface-visibility: hidden; /* Ensures that slides are not visible when flipped */
+}
+
+@media only screen and (max-width: 400px) {
+ .swiper-button-prev {
+	left: 1rem;
+}
+.swiper-button-next {
+	right: 1rem;
+}
+}
+</style>
+<!------------- Swiper concept ------------->
+
+
+
+<!------------- Hero animation ------------->
+<script>
+$(document).ready(function() {
+
+  var $video = $('.video-hero-wrapper--inner');
+  var $title = $('.industry-hero-wrapper h3');
+  var heroHeight = $('.section_industry-hero').outerHeight();
+  var smallVideoScale = 0.3;
+  var endScrollPoint = $('.section_industry-hero').outerHeight() / 1.5;
+  
+  console.log('heroHeight - ' + heroHeight);
+  console.log('endScrollPoint - ' + endScrollPoint);
+  
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '.section_industry-hero', 
+      start: 'top top', 
+      end: () => `+=${endScrollPoint}`, 
+      scrub: true, 
+      pin: $video[0], 
+      pinSpacing: true,
+      onUpdate: function(self) {
+        if (self.progress === 1) {
+          gsap.set($video, {
+            position: 'relative',
+            top: 'auto',
+            left: 'auto',
+            xPercent: 0,
+            yPercent: 0
+          });
+        }
+      },
+      onLeaveBack: function() {
+        gsap.set($video, {
+          clearProps: 'position, top, left, xPercent, yPercent'
+        });
+      }
+    }
+  })
+  .to($video, {
+    scale: smallVideoScale,
+    ease: "power2.out"
+  })
+  .to($title, {
+    opacity: 0,
+    ease: "power2.out"
+  }, "<");
+
+});
+</script>
+<!------------- Hero animation ------------->
+
+
+<!------------- Value proposition for multiple sections ------------->
+<script>
+class AnimationInstance {
+  constructor(container) {
+    this.container = container;
+    this.scrollTriggers = []; // Store ScrollTriggers for easy cleanup
+    this.initTabSwitching();   // Initialize tab switching logic
+    this.switchTab('1');       // Initialize the first tab on page load
+  }
+
+  initAnimation(section, animationId) {
+    // Debugging: Log the section and animationId being initialized
+    console.log("Initializing animation for section:", section, "with animationId:", animationId);
+
+    const timeline = section.querySelector('.timeline');
+    const progress = section.querySelector('.timeline-progress');
+    const marker = section.querySelector('.timeline-marker');
+    const blocks = section.querySelectorAll(`[id^="block-${animationId}"]`);
+
+    // Log the found elements to check if any are missing
+    console.log("Found elements:", { blocks, timeline, progress, marker });
+
+    // If blocks, timeline, progress, or marker don't exist, stop here and log an error
+    if (!blocks || blocks.length === 0 || !timeline || !progress || !marker) {
+      console.error("Blocks, timeline, progress, or marker not found for animationId:", animationId);
+      return;
+    }
+
+    const totalBlocks = blocks.length;
+    const opacityLevel = 0.2;
+
+    // Adjust the height of the section based on the number of blocks (prevents overlapping)
+    section.style.height = `${totalBlocks * 100}vh`;
+
+    gsap.set(progress, { height: 0 });
+    gsap.set(marker, { y: 0 });
+
+    // Create a ScrollTrigger for the overall section (this triggers the progress and marker)
+    const scrollTrigger = this.createScrollTrigger(section, 'top top', 'bottom bottom', (self) => {
+      const progressValue = self.progress;
+      const timelineHeight = timeline.offsetHeight;
+      const progressHeight = progressValue * timelineHeight;
+      gsap.to(progress, { height: progressHeight, duration: 0.1 });
+      const markerPosition = progressHeight - (marker.offsetHeight / 2);
+      gsap.to(marker, { y: markerPosition, duration: 0.1 });
+    });
+
+    // Initialize the first block with full opacity and color (as it is the starting block)
+    const firstBlock = blocks[0];
+
+    // Add a check to ensure firstBlock exists
+    if (firstBlock) {
+      const firstBlockIdParts = firstBlock.id.split('-');
+      const firstImage = section.querySelector(`#image-${firstBlockIdParts[1]}-${firstBlockIdParts[2]}`);
+      const firstHeading = firstBlock.querySelector('h5');
+
+      gsap.set(firstBlock, { opacity: 1 });
+      gsap.set(firstHeading, { color: '#000000' });
+      if (firstImage) gsap.set(firstImage, { opacity: 1 });
+    }
+
+    // Loop through each block and set up individual ScrollTriggers for visibility
+    blocks.forEach((block, index) => {
+      if (index === 0) return; // Skip the first block since it's already set
+
+      const blockIdParts = block.id ? block.id.split('-') : null;
+
+      // Add a check to ensure blockIdParts exists
+      if (!blockIdParts || blockIdParts.length < 2) {
+        console.error("Invalid block id:", block.id);
+        return;
+      }
+
+      const correspondingImage = section.querySelector(`#image-${blockIdParts[1]}-${blockIdParts[2]}`);
+      const heading = block.querySelector('h5');
+
+      gsap.set(block, { opacity: opacityLevel });
+      gsap.set(heading, { color: '#999999' });
+      if (correspondingImage) gsap.set(correspondingImage, { opacity: 0 });
+
+      // Set up ScrollTrigger for each block
+      const blockTrigger = this.createScrollTrigger(section,
+        () => `${index * (100 / totalBlocks)}% center`,
+        () => `${(index + 1) * (100 / totalBlocks)}% center`,
+        (self) => {
+          const progress = self.progress;
+          if (progress > 0.5) {
+            gsap.to(block, { opacity: 1, duration: 0.3 });
+            gsap.to(heading, { color: '#000000', duration: 0.3 });
+            if (correspondingImage) gsap.to(correspondingImage, { opacity: 1, duration: 0.3 });
+          } else {
+            gsap.to(block, { opacity: opacityLevel, duration: 0.3 });
+            gsap.to(heading, { color: '#999999', duration: 0.3 });
+            if (correspondingImage) gsap.to(correspondingImage, { opacity: 0, duration: 0.3 });
+          }
+        });
+
+      // Store each ScrollTrigger for later cleanup
+      this.scrollTriggers.push(blockTrigger);
+    });
+
+    // Store the main ScrollTrigger for later cleanup
+    this.scrollTriggers.push(scrollTrigger);
+  }
+
+  createScrollTrigger(trigger, start, end, onUpdate) {
+    return ScrollTrigger.create({
+      trigger: trigger,
+      start: start,
+      end: end,
+      scrub: 0.5,
+      markers: false,
+      onUpdate: onUpdate
+    });
+  }
+
+  initTabSwitching() {
+    // Set up tab switching logic for this specific container
+    const tabLinks = this.container.querySelectorAll('.values-btn-tab');
+    
+    tabLinks.forEach((tabLink) => {
+      tabLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetTab = tabLink.getAttribute('data-tab');
+        this.switchTab(targetTab);  // Switch to the clicked tab
+      });
+    });
+  }
+
+  switchTab(targetTab) {
+    // Clear active class from tabs and hide panes within this container
+    this.container.querySelectorAll('.values-btn-tab').forEach((tab) => tab.classList.remove('is-active'));
+    this.container.querySelectorAll('.section-general-values-1.tab-pane, .section-general-values-2.tab-pane').forEach((pane) => {
+      pane.classList.remove('active');
+      pane.style.display = 'none';
+    });
+
+    // Activate the selected tab and show the corresponding pane
+    const activeTabLink = this.container.querySelector(`.values-btn-tab[data-tab="${targetTab}"]`);
+    activeTabLink.classList.add('is-active');
+    
+    const activePane = this.container.querySelector(`.section-general-values-${targetTab}.tab-pane`);
+    activePane.classList.add('active');
+    activePane.style.display = 'block';
+
+    // Wait for the active pane to load before initializing animation
+    setTimeout(() => {
+      this.killScrollTriggers();
+      this.initAnimation(activePane, targetTab);
+    }, 100);  // Give a slight delay to ensure the DOM is fully updated
+  }
+
+  killScrollTriggers() {
+    // Kill all ScrollTriggers associated with this instance
+    this.scrollTriggers.forEach(trigger => trigger.kill());
+    this.scrollTriggers = []; // Clear the array
+  }
+}
+
+// Initialize instances of AnimationInstance for each animation container
+document.addEventListener('DOMContentLoaded', () => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Define all the container classes to initialize
+  const containerClasses = [
+    '.animation-container-1',
+    '.animation-container-2',
+    '.animation-container-3',
+    '.animation-container-4',
+    '.animation-container-5',
+    '.animation-container-6'
+  ];
+
+  // Initialize an instance for each container class
+  containerClasses.forEach((containerClass) => {
+    const container = document.querySelector(containerClass);
+    if (container) {
+      new AnimationInstance(container);
+    }
+  });
+});
+
+</script>
+<!------------- Value proposition for multiple sections ------------->
+
+<!---------------------- Rich text Color Difference ---------------------->
+<script src="https://cdn.finsweet.com/files/sweet-text/richtext-stylesystem-v1.0.min.js"></script>
+<!---------------------- Rich text Color Difference ---------------------->

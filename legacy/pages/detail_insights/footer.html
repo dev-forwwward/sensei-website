@@ -1,0 +1,39 @@
+<!------------- Animate Insight Title ------------->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const textToAnimate = document.querySelector('.insights-title-hidden');
+  const currentPos = textToAnimate.getBoundingClientRect();
+  const currentTop = currentPos.top;
+
+  const titleHidden = document.querySelector('.insights-title.is-animate');
+
+  const positionInfo = titleHidden.getBoundingClientRect();
+  const positionTop = positionInfo.top;
+
+  if (window.innerWidth > 991) {
+    gsap.fromTo(
+      ".insights-title.is-animate p",
+      {
+        y: currentTop - positionTop,
+        fontSize: '2.7rem',
+        ease: 'power1.inOut',
+        width: '128%',
+      },
+      {
+        y: 0,
+        fontSize: '1.8rem',
+        top: 0,
+        width: '100%',
+        ease: 'power1.inOut',
+        scrollTrigger: {
+          trigger: '.section_insight-hero',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 2,
+        },
+      }
+    );
+  }
+});
+</script>
+<!------------- Animate Insight Title ------------->

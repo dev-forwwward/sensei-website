@@ -1,0 +1,431 @@
+<!------------- Marquee Clients ------------->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const marqueeContainer = document.querySelector('.home-intro-clients.marquee-container');
+    const marqueeContent = document.querySelector('.marquee-content');
+    const clientsList = document.querySelector('.clients-list');
+
+    // Clone the clients list multiple times to ensure smooth looping
+    const cloneCount = Math.ceil(window.innerWidth / clientsList.offsetWidth) + 1;
+    for (let i = 0; i < cloneCount; i++) {
+      const clone = clientsList.cloneNode(true);
+      marqueeContent.appendChild(clone);
+    }
+
+    // Set up the GSAP animation
+    let animation;
+    function setupMarquee() {
+      // Kill any existing animation
+      if (animation) animation.kill();
+
+      // Calculate the total width of all cloned lists
+      const totalWidth = marqueeContent.offsetWidth;
+
+      // Create the animation
+      animation = gsap.to(marqueeContent, {
+        x: -totalWidth / cloneCount,
+        ease: 'none',
+        duration: 10, // Adjust this value to control speed
+        repeat: -1,
+        onRepeat: () => {
+          gsap.set(marqueeContent, { x: 0 });
+        },
+      });
+    }
+
+    // Initial setup
+    setupMarquee();
+
+    // Pause on hover
+    marqueeContainer.addEventListener('mouseenter', () => {
+      gsap.to(animation, { timeScale: 0, duration: 0.5 });
+    });
+    marqueeContainer.addEventListener('mouseleave', () => {
+      gsap.to(animation, { timeScale: 1, duration: 0.5 });
+    });
+
+    // Update on window resize
+    //window.addEventListener('resize', gsap.utils.debounce(setupMarquee, 100));
+  });
+</script>
+<!------------- Marquee Clients ------------->
+
+<!------------- Industries HOME ------------->
+<!--- START Make industries-images to show --->
+<script>
+  $(document).ready(function () {
+    // Select the first industry name based on index 0, ensuring it's the first item in the sorted CMS order
+    var firstIndustryID = $('.industry-name').eq(0).attr('data-industry-id');
+
+    // Log to confirm we are selecting the correct first item
+    // console.log("First Industry ID (from CMS order): ", firstIndustryID);
+
+    // Hide all images initially and set z-index to 1
+    $('.industry-image').hide().css({
+      opacity: 0,
+      'z-index': 1,
+    });
+
+    // Show the first image by setting display, opacity, and z-index
+    $('.industry-image[data-industry-id="' + firstIndustryID + '"]').css({
+      display: 'block',
+      opacity: 1,
+      'z-index': 10,
+    });
+
+    // Add active class to the first industry name
+    $('.industry-name[data-industry-id="' + firstIndustryID + '"]').addClass('active');
+
+    // Hover functionality for the industry names
+    $('.industry-name').hover(function () {
+      // Get the ID of the industry being hovered
+      var industryID = $(this).attr('data-industry-id');
+
+      // Hide all industry images and reset their z-index
+      $('.industry-image').hide().css({
+        opacity: 0,
+        'z-index': 1,
+      });
+
+      // Show the corresponding image by matching the data-industry-id
+      $('.industry-image[data-industry-id="' + industryID + '"]').css({
+        display: 'block',
+        opacity: 1,
+        'z-index': 10,
+      });
+
+      // Remove active class from all industry names and add to the hovered one
+      $('.industry-name').removeClass('active');
+      $(this).addClass('active');
+    });
+  });
+</script>
+<!--- END Make industries-images to show --->
+<style>
+  /* Hide all images initially */
+  .industry-image {
+    display: none;
+    opacity: 0;
+    z-index: 1; /* Default z-index for hidden items */
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Show the first image by default */
+  .industry-image:first-of-type {
+    display: block !important;
+    opacity: 1;
+    z-index: 10; /* Bring the first image to the top */
+  }
+
+  /* Default state for the industry name */
+  .industry-name .dot-menu {
+    display: none; /* Hide dot-menu by default */
+  }
+
+  .industry-name .txt-block-h4 {
+    color: var(--colors--olive-10); /* Default text color */
+  }
+
+  /* Active state for the industry name */
+  .industry-name.active .dot-menu {
+    display: block !important; /* Show dot-menu when active */
+  }
+
+  .industry-name.active .txt-block-h4 {
+    color: var(--colors--black); /* Change text color to black */
+  }
+</style>
+
+<!--- START Make sub-industries-label to show --->
+<script>
+  $(document).ready(function () {
+    // Initially hide all sub-industry labels
+    $('.home-sub-industry-labels-item').hide();
+
+    // Hover functionality for industry names
+    $('.home-industries-names-item').hover(function () {
+      var industryID = $(this).attr('data-industry-id'); // Get the ID of the industry being hovered
+
+      // Hide all sub-industry labels
+      $('.home-sub-industry-labels-item').hide();
+
+      // Show the sub-industry labels that correspond to the hovered industry
+      $('.home-sub-industry-labels-item[data-industry-id="' + industryID + '"]').show();
+    });
+  });
+</script>
+<!--- END Make sub-industries-label to show --->
+<!--- START Make first sub-industry-label to show by default --->
+<script>
+  $(document).ready(function () {
+    // Initially hide all sub-industry labels
+    $('.home-sub-industry-labels-item').hide();
+
+    // Show sub-industry labels for the first industry by default
+    var firstIndustryID = $('.home-industries-names-item').first().attr('data-industry-id'); // Get the ID of the first industry
+    $('.home-sub-industry-labels-item[data-industry-id="' + firstIndustryID + '"]').show();
+
+    // Hover functionality for industry names
+    $('.home-industries-names-item').hover(function () {
+      var industryID = $(this).attr('data-industry-id'); // Get the ID of the industry being hovered
+
+      // Hide all sub-industry labels
+      $('.home-sub-industry-labels-item').hide();
+
+      // Show the sub-industry labels that correspond to the hovered industry
+      $('.home-sub-industry-labels-item[data-industry-id="' + industryID + '"]').show();
+    });
+  });
+</script>
+<!--- END Make first sub-industry-label to show by default --->
+<!--- START Progress bar --->
+<script>
+  $(document).ready(function () {
+    // Set up variables for cycling and progress
+    var industryItems = $('.home-industries-names-item');
+    var totalItems = industryItems.length;
+    var currentIndex = 0;
+    var cycleInterval = 3000; // Time to display each industry (in milliseconds)
+    var cycling = true; // Enable automatic cycling by default
+
+    // Initially hide all sub-industry labels and images, and show the first one
+    $('.home-sub-industry-labels-item').hide();
+    $('.industry-image').hide(); // Hide all images initially
+    var firstIndustryID = industryItems.first().attr('data-industry-id');
+    $('.home-sub-industry-labels-item[data-industry-id="' + firstIndustryID + '"]').show();
+    $('.industry-image[data-industry-id="' + firstIndustryID + '"]').css({ display: 'block', opacity: 1 }); // Show first image by default
+    updateProgressBar(0); // Initialize progress bar
+
+    // Add active state to the first industry name
+    $('.industry-name[data-industry-id="' + firstIndustryID + '"]').addClass('active');
+
+    // Function to update the progress bar width based on the current index
+    function updateProgressBar(index) {
+      var progressWidth = (index / totalItems) * 100;
+      $('.progress-bar').css('width', progressWidth + '%');
+    }
+
+    // Function to hide all images and show the one with the matching data-industry-id
+    function showImageForIndustry(industryID) {
+      // Hide all images and set opacity to 0
+      $('.industry-image').css({ opacity: 0, display: 'none' });
+
+      // Show the matching image by setting opacity to 1 and display to block
+      $('.industry-image[data-industry-id="' + industryID + '"]').css({ display: 'block', opacity: 1 });
+    }
+
+    // Function to cycle through industries
+    function cycleIndustries() {
+      if (cycling) {
+        // Move to the next industry
+        currentIndex = (currentIndex + 1) % totalItems;
+        var industryID = industryItems.eq(currentIndex).attr('data-industry-id');
+
+        // Hide all sub-industry labels and images
+        $('.home-sub-industry-labels-item').hide();
+        $('.industry-image').hide();
+
+        // Show the corresponding sub-industry labels and images
+        $('.home-sub-industry-labels-item[data-industry-id="' + industryID + '"]').show();
+        showImageForIndustry(industryID); // Show corresponding image
+
+        // Remove active class from all industry names and add to the current one
+        $('.industry-name').removeClass('active');
+        $('.industry-name[data-industry-id="' + industryID + '"]').addClass('active');
+
+        // Update progress bar
+        updateProgressBar(currentIndex);
+      }
+    }
+
+    // Set up an interval to automatically cycle through industries
+    var cycleTimer = setInterval(cycleIndustries, cycleInterval);
+
+    // Hover functionality for industry names (manual control)
+    industryItems.hover(
+      function () {
+        cycling = false; // Pause automatic cycling when user hovers
+
+        var industryID = $(this).attr('data-industry-id');
+        currentIndex = $(this).index(); // Update current index based on hover
+
+        // Hide all sub-industry labels and images
+        $('.home-sub-industry-labels-item').hide();
+        $('.industry-image').hide();
+
+        // Show the corresponding sub-industry labels and images
+        $('.home-sub-industry-labels-item[data-industry-id="' + industryID + '"]').show();
+        showImageForIndustry(industryID); // Show corresponding image
+
+        // Remove active class from all industry names and add to the hovered one
+        $('.industry-name').removeClass('active');
+        $('.industry-name[data-industry-id="' + industryID + '"]').addClass('active');
+
+        // Update progress bar
+        updateProgressBar(currentIndex);
+      },
+      function () {
+        cycling = true; // Resume automatic cycling when hover ends
+      }
+    );
+  });
+</script>
+<!--- END Progress bar --->
+<!------------- Industries HOME ------------->
+
+<!------------- Solutions HOME ------------->
+<!-- Swiper.js JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize the thumbnail slider
+    const thumbSlider = new Swiper('.swiper.is-thumbs', {
+      slidesPerView: 'auto', // Number of thumbnails visible
+      spaceBetween: 10, // Space between thumbnails
+      freeMode: true, // Allows free scrolling of thumbnails
+      watchSlidesProgress: true, // Syncs with main slider
+      watchSlidesVisibility: true, // Ensures only visible thumbnails are synced
+    });
+
+    // Initialize the main slider
+    const mainSlider = new Swiper('.swiper.is-home-solutions', {
+      slidesPerView: 1, // Only 1 main slide visible at a time
+      spaceBetween: 10, // Space between slides
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      loop: true, // Enables looping
+      lazy: true, // Enables lazy loading for images
+      autoplay: {
+        // Autoplay configuration
+        delay: 4000, // Autoplay delay in milliseconds
+        disableOnInteraction: true,
+      },
+      thumbs: {
+        swiper: thumbSlider, // Connects the thumbnail slider to the main slider
+      },
+    });
+  });
+</script>
+<!-- Include Swiper.js CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<style>
+  /* Swiper */
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    content: ''; /* Remove default arrow */
+  }
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: var(--colors--black); /* Remove any color settings */
+    margin-top: 0px;
+    width: 24px;
+    height: 24px;
+  }
+  .swiper-button-prev {
+    left: 5rem;
+  }
+  .swiper-button-next {
+    right: 5rem;
+  }
+  /* Ensure each thumbnail slide displays properly */
+  .is-thumbs .swiper-slide {
+    width: auto; /* Let the slide width adjust automatically */
+    flex-shrink: 0; /* Prevent shrinking of slides */
+  }
+  .is-thumbs .swiper-slide-thumb-active {
+    opacity: 1; /* Highlight active thumbnail */
+  }
+  /* Optional: If you want to control the minimum size of each thumbnail */
+  .is-thumbs .swiper-slide img {
+    display: block; /* Ensure proper display of images */
+  }
+  .swiper {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  /* Target the .thumbs-slider button inside the active .swiper-slide */
+  .swiper-slide-thumb-active .thumbs-slider {
+    background-color: var(--colors--olive-40); /* Example: Change background color for the active state */
+    color: var(--colors--yellow); /* Change text color */
+  }
+  @media only screen and (max-width: 650px) {
+    .swiper-button-prev {
+      left: 0rem;
+    }
+    .swiper-button-next {
+      right: 0rem;
+    }
+  }
+</style>
+<!------------- Solutions HOME ------------->
+
+<!------------- Hero animation ------------->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+$(document).ready(function () {
+  gsap.registerPlugin(ScrollTrigger);
+
+  var $video = $('.video-hero-wrapper--inner');
+  var $title = $('.home-hero-wrapper h1');
+  var isDesktop = window.innerWidth >= 768;
+
+  var desiredWidth = 425;
+  var scaleFactor = isDesktop ? desiredWidth / window.innerWidth : 0.5;
+
+  // Anchor the scale so the small video ends flush with the container's right edge
+  // Anchor the scale so the small video ends flush with the container's left edge
+  if (window.innerWidth > 991) {
+    var container = document.querySelector('.section_home-intro .container-xl');
+    var videoRect = $video[0].getBoundingClientRect();
+    var targetLeft = container.getBoundingClientRect().left - videoRect.left;
+    var originX = targetLeft / (1 - scaleFactor);
+    gsap.set($video, { transformOrigin: originX + 'px center' });
+  }
+
+  var endScrollPoint = $('.section_home-hero').outerHeight() * 0.5;
+  var textEl = document.querySelector('.section_home-intro .container-l');
+  var elementHeight = textEl ? textEl.offsetHeight : 0;
+  endScrollPoint = endScrollPoint + elementHeight / 2 + 35;
+  endScrollPoint = window.innerWidth > 991 ? endScrollPoint : endScrollPoint - 200;
+
+  gsap
+    .timeline({
+      scrollTrigger: {
+        trigger: '.section_home-hero',
+        start: 'top top',
+        end: () => `+=${endScrollPoint}`,
+        scrub: true,
+        pin: $video[0],
+        pinSpacing: true,
+        onUpdate: function (self) {
+          if (self.progress === 1) {
+            gsap.set($video, { position: 'relative', top: 'auto', left: 'auto', xPercent: 0, yPercent: 0 });
+          }
+        },
+        onLeaveBack: function () {
+          gsap.set($video, { clearProps: 'position, top, left, xPercent, yPercent' });
+        },
+      },
+    })
+    .to($video, { scale: scaleFactor, left: 0, ease: 'power2.out' })
+    .to($title, { opacity: 0, ease: 'power2.out' }, '<');
+});
+</script>
+<style>
+  @media (max-width: 991px) {
+    .video-hero-wrapper--inner {
+      transform-origin: center;
+    }
+    .section_home-intro {
+      height: auto;
+      padding-top: 75vw;
+    }
+  }
+</style>

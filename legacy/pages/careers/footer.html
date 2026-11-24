@@ -1,0 +1,277 @@
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Draggable.min.js"></script>
+
+<!------------- Accordions ------------->
+<script>
+const createAccordions = (targets, closeOtherTargets, setFirstItemExapanded, callback) => {
+  if (!targets.length) return;
+
+  if (setFirstItemExapanded) {
+    targets[0].setAttribute('aria-expanded', 'true');
+  }
+
+  targets.forEach((accordion) => {
+    accordion.addEventListener('click', function () {
+      if (closeOtherTargets) {
+        targets.forEach((target) => {
+          if (target !== this) {
+            target.removeAttribute('aria-expanded');
+          }
+        });
+      }
+
+      this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+
+      if (callback) {
+        callback(this);
+      }
+    });
+  });
+};
+
+createAccordions(document.querySelectorAll('[data-accordion="benefits"]'), true, true);
+</script>
+<!------------- Accordions ------------->
+
+<!------------- Benefits ------------->
+<script>
+const swiperBenefits = new Swiper('.swiper.is-benefits', {
+  slidesPerView: 'auto',
+  spaceBetween: -1,
+  navigation: {
+    nextEl: '#benefits-next',
+    prevEl: '#benefits-prev',
+  },
+});
+</script>
+<!------------- Benefits ------------->
+
+<!------------- Cursors ------------->
+<script>
+const setCursors = () => {
+  const worldContainer = document.querySelector('.careers-benefits_world');
+  const WorldCursor = document.querySelector('.world-caption');
+
+  const carrersContainer = document.querySelector('.swiper.is-careers-process');
+  const carrersCursor = document.querySelector('.careers-process_cursor');
+
+  if (!worldContainer || !WorldCursor) return;
+
+  worldContainer?.addEventListener('mousemove', (event) => {
+    const rect = worldContainer.getBoundingClientRect();
+    const cursorRect = WorldCursor.getBoundingClientRect();
+
+    gsap.to(WorldCursor, {
+      duration: 1,
+      ease: 'power3',
+      x: event.x - rect.left + 16,
+      y: event.y - rect.top - rect.height + cursorRect.height + 16,
+      left: 0,
+      bottom: 0,
+    });
+  });
+
+  carrersContainer?.addEventListener('mousemove', (event) => {
+    const rect = carrersContainer.getBoundingClientRect();
+    const cursorRect = carrersCursor.getBoundingClientRect();
+
+    gsap.to(carrersCursor, {
+      duration: 1,
+      ease: 'power3',
+      x: event.x - rect.left - cursorRect.width / 2,
+      y: event.y - rect.top - rect.height + cursorRect.height / 2,
+      left: 0,
+      bottom: 0,
+    });
+  });
+
+  gsap.set(carrersCursor, {
+    duration: 0.5,
+    alpha: 0,
+  });
+
+  carrersContainer?.addEventListener('mouseenter', () => {
+    gsap.to(carrersCursor, {
+      duration: 0.4,
+      alpha: 1,
+    });
+  });
+
+  carrersContainer?.addEventListener('mouseleave', () => {
+    gsap.to(carrersCursor, {
+      duration: 0.4,
+      alpha: 0,
+    });
+  });
+
+  worldContainer?.addEventListener('mouseleave', () => {
+    gsap.to(WorldCursor, {
+      duration: 1,
+      ease: 'power3',
+      left: 'calc(50% - 18px)',
+      bottom: -34,
+      x: 0,
+      y: 0,
+    });
+  });
+};
+
+if (window.innerWidth > 991) {
+  setCursors();
+}
+</script>
+<!------------- Cursors ------------->
+
+<!------------- Timeline ------------->
+<script>
+const initProcessTimeline = () => {
+  // Initialize Swiper
+  const swiperProcess = new Swiper('.swiper.is-careers-process', {
+    slidesPerView: 'auto',
+    grabCursor: true,
+    touchStartPreventDefault: false,
+  });
+
+  const careerProcessNextStep = document.querySelector('#career-process-next-step');
+  careerProcessNextStep?.addEventListener('click', () => swiperProcess.slideNext());
+
+  const processTimeline = document.querySelector('.process_timeline');
+
+  if (!processTimeline) return;
+
+  // Create timeline elements
+  const createTimelineElements = () => {
+    const dividersPerSlide = window.innerWidth > 991 ? 20 : 4;
+    const totalSlides = swiperProcess.slides.length;
+
+    const fragment = document.createDocumentFragment();
+
+    for (let index = 0; index < totalSlides; index++) {
+      if (index === 0) {
+        const square = document.createElement('div');
+        square.classList.add('process_timeline-square');
+        square.addEventListener('click', () => swiperProcess.slideTo(index));
+        fragment.appendChild(square);
+      }
+
+      if (index !== 0) {
+        for (let i = 0; i < dividersPerSlide; i++) {
+          const divider = document.createElement('div');
+          divider.classList.add('process_timeline-divider');
+          fragment.appendChild(divider);
+        }
+      }
+
+      if (index !== 0 && index !== totalSlides - 1) {
+        const step = document.createElement('div');
+        step.classList.add('process_timeline-step');
+        step.innerText = window.innerWidth > 991 ? `[ ${index} / ${totalSlides - 2} ]` : `[ ${index} ]`;
+        step.addEventListener('click', () => swiperProcess.slideTo(index));
+        fragment.appendChild(step);
+      }
+
+      if (index === totalSlides - 1) {
+        const square = document.createElement('div');
+        square.classList.add('process_timeline-square');
+        square.addEventListener('click', () => swiperProcess.slideTo(index));
+        fragment.appendChild(square);
+      }
+    }
+
+    processTimeline.appendChild(fragment);
+    return Array.from(processTimeline.children);
+  };
+
+  const timelineSteps = createTimelineElements();
+  const activeStepSquare = document.querySelector('.process_timeline-square.is-current-step');
+
+  if (!activeStepSquare) return;
+
+  let isDragging = false;
+  processTimeline.addEventListener('mousedown', () => {
+    isDragging = true;
+    processTimeline.style.cursor = 'grabbing';
+  });
+
+  processTimeline.addEventListener('mouseup', () => {
+    isDragging = false;
+    processTimeline.style.cursor = 'grab';
+  });
+
+  processTimeline.addEventListener('mousemove', (event) => {
+    if (!isDragging) return;
+
+    const progress = ((event.clientX - processTimeline.offsetLeft) * 100) / processTimeline.offsetWidth / 100;
+    updateTimeline(progress, true);
+  });
+
+  // Handle progress updates
+  const updateTimeline = (progress, isDragging) => {
+    const currentStep = Math.round(progress * (timelineSteps.length - 1)) + (progress <= 0.5 ? 1 : 0);
+
+    const currentStepItem = timelineSteps[currentStep];
+    if (!currentStepItem) return;
+
+    const offset = currentStep === 0 ? 0 : activeStepSquare.offsetWidth / 2 - currentStepItem.offsetWidth / 2;
+
+    gsap.to(activeStepSquare, {
+      duration: 0.4,
+      x: currentStepItem.offsetLeft - offset,
+    });
+
+    // Reset all classes
+    timelineSteps.forEach((step) => {
+      step.classList.remove('is-active', 'is-set');
+    });
+
+    // Set active classes
+    if (currentStepItem.classList.contains('process_timeline-divider')) {
+      currentStepItem.classList.add('is-active');
+      currentStepItem.previousElementSibling?.previousElementSibling?.classList.add('is-set');
+    }
+
+    if (isDragging) {
+      swiperProcess.setProgress(progress, 0);
+    }
+
+    gsap.to('.careers-process_title', {
+			scale: progress !== 0 ? (window.innerWidth > 991 ? 0.27 : 0.34) : 1,
+      transformOrigin: 'left bottom',
+    });
+  };
+
+  if (!isDragging) {
+    swiperProcess.on('progress', (_, progress) => updateTimeline(progress));
+  }
+};
+
+initProcessTimeline();
+</script>
+<!------------- Timeline ------------->
+
+
+
+<!------------- FadeIn ------------->
+<script>
+const selector = window.innerWidth > 991 ? '[data-fade-in]' : '[data-fade-in], [data-img-sticker]';
+
+gsap.set(selector, {
+  opacity: 0,
+});
+
+ScrollTrigger?.batch(selector, {
+  end: '100%',
+  interval: 0.1,
+  onEnter: (fadeInElements) => {
+    gsap.to(fadeInElements, {
+      duration: 0.4,
+      ease: 'cubic-bezier(0.45, 0.05, 0.55, 0.95)',
+      opacity: 1,
+      stagger: 0.1,
+    });
+  },
+  once: true,
+  start: 'top 90%',
+});
+</script>
+<!------------- FadeIn ------------->

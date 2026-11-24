@@ -1,0 +1,53 @@
+<!---------------------- Rich text Color Difference ---------------------->
+<script src="https://cdn.finsweet.com/files/sweet-text/richtext-stylesystem-v1.0.min.js"></script>
+<!---------------------- Rich text Color Difference ---------------------->
+
+<script>
+function generateAndUpdateTOC() {
+  const content = document.querySelector('.rich-text-content'); // Replace with your rich text element's class
+  const toc = document.querySelector('#table-of-contents'); // Replace with your TOC element's ID
+  
+  if (!content || !toc) {
+    console.error('Content or TOC container not found');
+    return;
+  }
+
+  const headers = content.querySelectorAll('h6');
+  const tocList = document.createElement('ul');
+  tocList.className = 'toc-list';
+
+  headers.forEach((header, index) => {
+    const headerId = `toc-header-${index}`;
+    header.id = headerId;
+
+    const listItem = document.createElement('li');
+    listItem.className = 'toc-item';
+    const link = document.createElement('a');
+    link.textContent = header.textContent;
+    link.href = `#${headerId}`;
+    listItem.appendChild(link);
+    tocList.appendChild(listItem);
+  });
+
+  // Clear existing content and append new list
+  toc.innerHTML = '';
+  toc.appendChild(tocList);
+
+  // Handle active state
+  const tocItems = document.querySelectorAll('.toc-item');
+  
+  window.addEventListener('scroll', () => {
+    const fromTop = window.scrollY + 100; // Adjust offset as needed
+
+    headers.forEach((header, index) => {
+      if (header.offsetTop <= fromTop) {
+        tocItems.forEach((item) => item.classList.remove('active'));
+        tocItems[index].classList.add('active');
+      }
+    });
+  });
+}
+
+// Run the function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', generateAndUpdateTOC);
+</script>

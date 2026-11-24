@@ -1,0 +1,50 @@
+<!-- Source of truth: github.com/dev-forwwward/sensei-website → webflow/site-footer.html -->
+
+<!---------------------- GSAP + plugins (legacy site & page code rely on these globals) ---------------------->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+<!-- Text split (pinned: same file unpkg.com/split-type resolved to) -->
+<script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
+<!-- Legacy loaded GSAP a 3rd time before its testimonials block; kept so behaviour is unchanged -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollToPlugin);
+</script>
+<!---------------------- GSAP + plugins ---------------------->
+
+<!-- FWD white-label libs — enable together with the matching modules in js/script-loader.js -->
+<!-- Lenis Scroll (main) -->
+<!-- <script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script> -->
+<!-- Form validation (form) -->
+<!-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script> -->
+<!-- Swiper (swiper) -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> -->
+
+<!-- FWD GitHub Repo Scripts (?dev=true → local Live Server on :5500) -->
+<script>
+(function () {
+  var isDev = new URLSearchParams(window.location.search).get('dev') === 'true';
+
+  var localSrc = 'http://127.0.0.1:5500/js/script-loader.js?v=' + Date.now();
+  var cdnSrc = 'https://cdn.jsdelivr.net/gh/dev-forwwward/sensei-website@main/js/script-loader.js?v=' + Date.now();
+
+  var script = document.createElement('script');
+  script.type = 'module';
+  script.src = isDev ? localSrc : cdnSrc;
+
+  script.onerror = function () {
+    if (isDev) {
+      console.warn('Local JS failed, loading CDN fallback...');
+      var fallback = document.createElement('script');
+      fallback.type = 'module';
+      fallback.src = cdnSrc;
+      document.body.appendChild(fallback);
+    }
+  };
+
+  document.body.appendChild(script);
+})();
+</script>

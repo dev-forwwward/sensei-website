@@ -1,8 +1,15 @@
-@import url('menu.css');
-@import url('faqs.css');
+/* Sensei legacy site styles (ported from Webflow site custom code) */
+@import url('legacy-site.css');
+
+/* FWD white-label defaults — disabled while Sensei runs its legacy menu / accordions.
+   Re-enable together with the matching modules in js/script-loader.js. */
+/* @import url('menu.css'); */
+/* @import url('faqs.css'); */
 /* @import url('form-multistep-calendly.css'); */
 
-/* Text selection highlight */
+/* Text selection highlight — disabled: --color-scheme-1--text-selection isn't defined
+   in Sensei and would override the legacy ::selection in legacy-site.css */
+/*
 ::selection {
     background-color: var(--color-scheme-1--text-selection);
     color: white;
@@ -12,6 +19,7 @@
     background-color: var(--color-scheme-1--text-selection);
     color: white;
 }
+*/
 
 /*
 *   CURSOR

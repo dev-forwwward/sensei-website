@@ -1,0 +1,457 @@
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<script src="https://xq5gdz.csb.app/dojo-video.js"></script>
+
+<!------------- Marquee Investors ------------->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const marqueeContainer = document.querySelector('.company-intro-investors.marquee-container');
+    const marqueeContent = document.querySelector('.marquee-content');
+    const clientsList = document.querySelector('.clients-list');
+
+    // Clone the clients list multiple times to ensure smooth looping
+    const cloneCount = Math.ceil(window.innerWidth / clientsList.offsetWidth) + 1;
+    for (let i = 0; i < cloneCount; i++) {
+      const clone = clientsList.cloneNode(true);
+      marqueeContent.appendChild(clone);
+    }
+
+    // Set up the GSAP animation
+    let animation;
+    function setupMarquee() {
+      // Kill any existing animation
+      if (animation) animation.kill();
+
+      // Calculate the total width of all cloned lists
+      const totalWidth = marqueeContent.offsetWidth;
+
+      // Create the animation
+      animation = gsap.to(marqueeContent, {
+        x: -totalWidth / cloneCount,
+        ease: 'none',
+        duration: 10, // Adjust this value to control speed
+        repeat: -1,
+        onRepeat: () => {
+          gsap.set(marqueeContent, { x: 0 });
+        }
+      });
+    }
+
+    // Initial setup
+    setupMarquee();
+
+    // Pause on hover
+    marqueeContainer.addEventListener('mouseenter', () => {
+      gsap.to(animation, { timeScale: 0, duration: 0.5 });
+    });
+    marqueeContainer.addEventListener('mouseleave', () => {
+      gsap.to(animation, { timeScale: 1, duration: 0.5 });
+    });
+
+    // Function to call after resize with debounce
+    function callAfterResize(func, delay) {
+      let dc = gsap.delayedCall(delay || 0.2, func).pause(),
+          handler = () => dc.restart(true);
+      window.addEventListener("resize", handler);
+      return handler; // in case you want to remove the listener later
+    }
+
+    // Update on window resize
+    const resizeHandler = callAfterResize(setupMarquee, 0.1);
+  });
+</script>
+<!------------- Marquee Investors ------------->
+
+<!------------- Marquee team ------------->
+<script>
+  // Function to initialize the marquee and filtering
+  function initMarqueeAndFilter() {
+    const list = document.querySelector(".company-team-list");
+    const originalItems = Array.from(list.children);
+    const departmentButtons = document.querySelectorAll(".story-tab");
+
+    // Duplicate items once to create a seamless loop
+    originalItems.forEach(item => {
+      const clone = item.cloneNode(true);
+      list.appendChild(clone);
+    });
+
+    // Calculate the total width of the list (including the duplicated items)
+    const totalWidth = list.scrollWidth / 2;
+
+    // Initialize the marquee animation using GSAP
+    let marqueeAnimation = gsap.to(list, {
+      x: -totalWidth,
+      ease: "none",
+      duration: 200, // Duration set to 100 for a slower scroll
+      repeat: -1, // Repeat indefinitely for a continuous loop
+      paused: false
+    });
+
+    // Function to restart the marquee animation with updated width
+    function restartMarquee() {
+      gsap.killTweensOf(list); // Stop any existing animation
+      const updatedWidth = list.scrollWidth / 2;
+      marqueeAnimation = gsap.to(list, {
+        x: -updatedWidth,
+        ease: "none",
+        duration: 200,
+        repeat: -1,
+        paused: false
+      });
+    }
+
+    // Function to filter team members based on the selected department
+    departmentButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const selectedDepartment = button.getAttribute("data-department");
+
+        // Remove 'active' class from all buttons and add to clicked button
+        departmentButtons.forEach(btn => btn.classList.toggle("active", btn === button));
+
+        // Pause the marquee animation while filtering
+        gsap.killTweensOf(list);
+
+        // Filter items based on the selected department
+        originalItems.forEach(item => {
+          const itemDepartment = item.getAttribute("data-department");
+          const isVisible = selectedDepartment === "all" || itemDepartment === selectedDepartment;
+
+          gsap.to(item, {
+            opacity: isVisible ? 1 : 0,
+            visibility: isVisible ? "visible" : "hidden",
+            duration: 0.5,
+            ease: isVisible ? "power2.out" : "power2.in",
+            onStart: () => { if (isVisible) item.style.display = "block"; },
+            onComplete: () => { if (!isVisible) item.style.display = "none"; }
+          });
+        });
+
+        // Restart the marquee with the new filtered items
+        setTimeout(restartMarquee, 600); // Delay slightly to ensure all transitions complete
+      });
+    });
+
+    // Hover effect for pausing marquee and moving items upward
+    const items = list.querySelectorAll(".company-team-item");
+
+    items.forEach(item => {
+      item.addEventListener("mouseenter", () => {
+        marqueeAnimation.pause(); // Pause the marquee on hover
+
+        // Animate the movement of .company-team-item upward
+        gsap.to(item, {
+          y: -40, // Adjusted for a more noticeable movement
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+
+      item.addEventListener("mouseleave", () => {
+        marqueeAnimation.resume(); // Resume the marquee when hover ends
+
+        // Animate the movement of .company-team-item back to its original position
+        gsap.to(item, {
+          y: 0,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+    });
+  }
+
+  // Initialize the marquee and filtering when the page is loaded
+  window.addEventListener("load", initMarqueeAndFilter);
+</script>
+
+
+<style>
+  .company-team-list {
+    display: flex;
+    width: max-content;
+  }
+
+  .company-team-item {
+    flex: 0 0 auto;
+    min-width: 200px;
+    /* Adjust based on the size of your team items */
+  }
+
+  .story-tab.active {
+    background-color: var(--colors--beige-20);
+    /* Example active background color */
+    color: var(--colors--olive-20) !important;
+    /* Change text color */
+  }
+</style>
+<!------------- Marquee team ------------->
+
+
+
+
+<!------------- Hero animation ------------->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+
+<style>
+  .pin-spacer {
+    overflow: hidden !important;
+    background-color: var(--colors--black);
+  }
+
+  .pin-spacer:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    background: #fff;
+    z-index: 1;
+  }
+
+  .section_company-hero {
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .video-hero-company-wrapper {
+    width: 100%;
+    height: 100%;
+    transform: scale(0.22);
+    pointer-events: none;
+  }
+
+  /*.video-company {
+    z-index: 5;
+  }*/
+
+  .video-anim-wrapper {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  @media (max-width: 767px) {
+    .section_company-hero {
+      margin-bottom: 100px;
+    }
+    
+    .text-company-hero-wrapper {
+      height: 11rem;
+    }
+
+    .text-company-hero-wrapper h3 {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<script>
+  var $video = $('.video-hero-company-wrapper');
+  var $text1 = $('.hero-company-text').eq(0);
+  var $text2 = $('.hero-company-text').eq(1);
+
+  var initialScale = window.innerWidth > 767 ? 0.22 : 0.4;
+  var finalScale = window.innerWidth > 767 ? 0.98 : 0.9;
+
+  gsap.set($video, {
+    scale: initialScale,
+    transformOrigin: 'center center',
+    opacity: 1,
+  });
+
+  gsap.set($text2, { opacity: 0 });
+
+  var tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.section_company-hero',
+      start: 'top top',
+      end: '+=200%',
+      scrub: true,
+      pin: true,
+      pinSpacing: false,
+      onLeave: function () {
+        ScrollTrigger.getById('company-hero').pin = false;
+      },
+      id: 'company-hero',
+    }
+  });
+
+  tl.to($text1, {
+    opacity: 0,
+  }).to($text2, {
+    opacity: 1,
+  });
+
+  $("[hide-on-load]").css("opacity", "1");
+
+  tl.fromTo($video,
+    {
+      scale: initialScale,
+    },
+    {
+      scale: finalScale,
+      ease: 'power1.inOut',
+      duration: 2,
+      onComplete: function () {
+        ScrollTrigger.getById('company-hero').pin = false;
+      }
+    },
+    '-=1'
+  )
+    .to($text2, {
+      opacity: 0,
+      duration: 1
+    }, '-=2');
+
+  // Ensure that the pin-spacer allows clicks on the button
+  ScrollTrigger.addEventListener("refresh", function () {
+    gsap.set('.pin-spacer', { pointerEvents: 'none' });
+  });
+
+  // Optionally, apply this directly after the page loads if the pin spacer is already created
+  window.addEventListener('load', function () {
+    gsap.set('.pin-spacer', { pointerEvents: 'none' });
+  });
+</script>
+<!------------- Hero animation ------------->
+
+<!------------- Quote Scroll Animation ------------->
+<style>
+  .company-quote_underline .word {
+    text-underline-offset: .15em;
+    text-decoration: underline;
+    text-decoration-thickness: .06em;
+  }
+</style>
+
+<script>
+  const elements = document.querySelectorAll('.company-quote_text-wrapper');
+  if (elements) {
+    elements?.forEach((target) => {
+      const { words } = new SplitType(target, { tagName: 'span', types: 'words' });
+
+      const animationConfig = {
+        duration: 1,
+        opacity: 0.2,
+        ease: 'power1.inOut',
+        stagger: 0.1,
+        scrollTrigger: {
+          end: 'bottom 50%',
+          scrub: 2,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+          trigger: target,
+        },
+      };
+
+      gsap.from(words, animationConfig);
+      gsap.from('.company-quote_icon', animationConfig);
+    });
+  }
+</script>
+<!------------- Quote Scroll Animation ------------->
+
+<!------------- What We Do Animation ------------->
+<script>
+if (window.innerWidth > 767) {
+  gsap.fromTo(
+    '.what-we-do_image',
+    { scale: 0.8 },
+    {
+      scale: 1,
+      scrollTrigger: {
+        trigger: '.what-we-do_image',
+        start: 'top 100%',
+        end: 'bottom bottom',
+        scrub: 2,
+        toggleActions: 'play none none reverse',
+      },
+    }
+  );
+
+  const whatWeDoTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.what-we-do_grid',
+      start: 'top 100%',
+      end: 'bottom bottom',
+      scrub: 2,
+      toggleActions: 'play none none reverse',
+    },
+  });
+
+  whatWeDoTimeline
+    .to('.what-we-do_image', { filter: 'blur(10px)', padding: '1rem' }, 0)
+    .to('.what-we-do_image-overlay', { opacity: 0.8 }, 0);
+}
+</script>
+<!------------- What We Do Animation ------------->
+
+<!------------- Accordions ------------->
+<script>
+  const createAccordions = (targets, closeOtherTargets, callback) => {
+    if (!targets.length) return;
+
+    targets.forEach((accordion) => {
+      accordion.addEventListener('click', function () {
+        if (closeOtherTargets) {
+          targets.forEach((target) => {
+            if (target !== this) {
+              target.removeAttribute('aria-expanded');
+            }
+          });
+        }
+
+        this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+
+        if (callback) {
+          callback(this);
+        }
+      });
+    });
+  };
+
+  createAccordions(document.querySelectorAll('[data-accordion="how-we-do"]'), true);
+</script>
+<!------------- Accordions ------------->
+
+<!------------- Testimonials Swiper ------------->
+<style>
+.swiper.is-testimonials {
+	display: flex;
+}
+</style>
+
+<script>
+const swiperTestimonials = new Swiper('.swiper.is-testimonials', {
+  loop: true,
+  slidesPerView: "auto",
+  navigation: {
+    nextEl: '#testimonials-next',
+    prevEl: '#testimonials-prev',
+  },
+});
+</script>
+<!------------- Testimonials Swiper ------------->
+
+<!------------- Where we going animation------------->
+<script>
+if (window.innerWidth > 768) {
+  const whereWeGoTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.company-where_description .paragraph-p-big',
+      start: 'top 60%',
+      end: 'bottom 60%',
+      scrub: 2,
+    },
+  });
+
+  whereWeGoTl
+    .to('.company-where_image', { top: '0' })
+    .to('.where-cover-image.is-1', { opacity: 0 }, 0)
+    .to('.where-cover-image.is-2', { opacity: 1 }, 0);
+}
+</script>
+<!------------- Where we going animation ------------->

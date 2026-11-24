@@ -1,0 +1,49 @@
+<style>
+/* Style for the table of contents list */
+.toc-list {
+  list-style: none;
+  padding-left: 20px;
+}
+
+/* Style for list items */
+.toc-item {
+  position: relative;
+  color: #C8C8C8;
+  transition: color 0.3s ease;
+}
+
+/* Custom marker for inactive items */
+.toc-item::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border: 1px solid #CCCCCC;
+  /* Remove border-radius to make it square */
+}
+
+/* Style for active item */
+.toc-item.active {
+  color: #1D1D1D;
+}
+
+/* Custom marker for active item */
+.toc-item.active::before {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+/* Style for links inside list items */
+.toc-item a {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Make entire area clickable */
+}
+
+.toc-item a:hover {
+	opacity: 1;
+}	
+</style>

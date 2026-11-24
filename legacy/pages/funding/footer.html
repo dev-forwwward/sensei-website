@@ -1,0 +1,28 @@
+<!---------------------- Rich text Color Difference ---------------------->
+<script src="https://cdn.finsweet.com/files/sweet-text/richtext-stylesystem-v1.0.min.js"></script>
+<!---------------------- Rich text Color Difference ---------------------->
+
+<script>
+function handleActiveListItems() {
+  const sections = document.querySelectorAll('.legal-section');
+
+  // Handle active state
+  const tocItems = document.querySelectorAll('.toc-item');
+
+  window.addEventListener('scroll', () => {
+    const fromTop = window.scrollY + 120; // Adjust offset as needed
+
+    sections.forEach((section, index) => {
+      console.log('section.offsetTop: ', section.offsetTop);
+      if (section.offsetTop <= fromTop) {
+        tocItems.forEach((item) => item.classList.remove('active'));
+        tocItems[index].classList.add('active');
+        console.log('tocItems[index]: ', tocItems[index]);
+      }
+    });
+  });
+}
+
+// Run the function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', handleActiveListItems);
+</script>

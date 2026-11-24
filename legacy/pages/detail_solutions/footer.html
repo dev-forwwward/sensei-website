@@ -1,0 +1,270 @@
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<!---------------------- Horizontal Scroll Features ---------------------->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const featuresSwiper = new Swiper('.features-collection', {
+    slidesPerView: 'auto',
+    grabCursor: true,
+    pagination: {
+      el: '.progress-dots-wrapper-horizontal',
+      clickable: true,
+    },
+    effect: 'coverflow',
+    coverflowEffect: {
+      rotate: 0,
+      scale: 0.85,
+      slideShadows: false,
+    },
+  });
+
+  const container = document.querySelector('.section_solution-features');
+
+  ScrollTrigger.create({
+    trigger: container,
+    pin: true,
+    scrub: 2,
+    start: 'top top',
+    onUpdate: (self) => {
+      const progress = self.progress;
+
+      const currentIndex = Math.round(progress * (featuresSwiper.slides.length - 1));
+      featuresSwiper.slideTo(currentIndex);
+    },
+  });
+
+  const industriesCollections = document.querySelectorAll('.industries-collection');
+
+  const industriesSwiper = new Swiper(industriesCollections[0], {
+    slidesPerView: 1,
+    direction: 'vertical',
+    allowTouchMove: false,
+  });
+
+  ScrollTrigger.create({
+    trigger: '.section_solution-industry',
+    pin: true,
+    scrub: 2,
+    start: 'top top',
+    onUpdate: (self) => {
+      const progress = self.progress;
+
+      const currentIndex = Math.round(progress * (industriesSwiper.slides.length - 1));
+      industriesSwiper.slideTo(currentIndex);
+
+      const titleContainer = document.querySelector('.solution-industry-title');
+      const title = document.querySelector('.solution-industry-txt');
+      const titleContainerHeight = titleContainer.clientHeight;
+      const padding = parseFloat(window.getComputedStyle(titleContainer).paddingTop) + parseFloat(window.getComputedStyle(titleContainer).paddingBottom);
+      const targetPosition = titleContainerHeight - padding - title.clientHeight;
+
+      gsap.to('.solution-industry-txt', {
+        y: targetPosition * progress,
+      });
+    },
+  });
+});
+</script>
+<!---------------------- Horizontal Scroll Features ---------------------->
+
+<!---------------------- Solution Industries ---------------------->
+<!--<script>
+document.addEventListener('DOMContentLoaded', () => {
+  gsap.registerPlugin(ScrollTrigger);
+  const rightSide = document.querySelector('.solution-industry-content');
+  const leftSide = document.querySelector('.solution-industry-title');
+  const items = rightSide.querySelectorAll('.industries-item');
+  const progressContainer = document.querySelector('.progress-dots-wrapper-vertical');
+  
+  // Create progress dots
+  items.forEach((_, index) => {
+    const dot = document.createElement('div');
+    dot.classList.add('progress-dot');
+    progressContainer.appendChild(dot);
+  });
+  const progressDots = progressContainer.querySelectorAll('.progress-dot');
+  
+  // Calculate the maximum scroll distance
+  const maxScroll = rightSide.scrollHeight - window.innerHeight;
+  
+  // Set up GSAP timeline
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: rightSide,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: true,
+      pin: leftSide,
+    },
+  });
+  
+  // Animate progress dots
+  items.forEach((item, index) => {
+    tl.to(progressDots[index], {
+      backgroundColor: '#000',
+      duration: 0.5,
+    }, `item${index}`);
+    if (index < items.length - 1) {
+      tl.to({}, { duration: 0.5 }, `item${index}+=0.5`);
+    }
+  });
+  
+  // Reset progress dots on scroll up
+  ScrollTrigger.create({
+    trigger: rightSide,
+    start: 'top bottom',
+    onLeaveBack: () => {
+      progressDots.forEach(dot => dot.style.backgroundColor = '');
+    },
+  });
+  
+  // Control visibility of progress dots
+  ScrollTrigger.create({
+    trigger: rightSide,
+    start: 'top top',
+    end: 'bottom bottom', // Changed from 'bottom top' to 'bottom bottom'
+    onEnter: () => gsap.to(progressContainer, { opacity: 1, duration: 0.1 }),
+    onLeave: () => gsap.to(progressContainer, { opacity: 0, duration: 0.1 }),
+    onEnterBack: () => gsap.to(progressContainer, { opacity: 1, duration: 0.1 }),
+    onLeaveBack: () => gsap.to(progressContainer, { opacity: 0, duration: 0.1 }),
+  });
+});
+</script>
+<!---------------------- Solution Industries ---------------------->
+
+
+<!---------------------- Tech ---------------------->
+
+
+
+<script>
+// Animation of anchoring the section so that it is fixed throughout the animation
+
+setTimeout(function() {
+
+
+  let pinAnimGsap = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.section_solution-tech', 
+      start: 'top top',  
+      end: '+=120%',     
+      scrub: true,       
+      pin: true,
+    }
+  });
+
+
+
+
+// Animation of text movement from bottom to top
+const oneElement = document.querySelector('.technology-text-list');
+const oneInsideElements = document.querySelectorAll('.technology-text-item');
+
+function calculateSpaceBetweenPositions(containerHeight, elementHeight, elementsCount) {
+  const totalSpace = containerHeight - elementHeight * elementsCount;
+  const spaceBetween = totalSpace / (elementsCount - 1);
+  return Array.from({ length: elementsCount }, (_, index) => index * (elementHeight + spaceBetween));
+}
+
+
+  let animGsap = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.section_solution-tech',
+      start: 'top 20%',
+      end: 'bottom 30%',
+      scrub: true,
+    }
+  });
+
+
+
+const containerHeight = oneElement.offsetHeight;
+const elementHeight = oneInsideElements[0].offsetHeight;
+const spaceBetweenPositions = calculateSpaceBetweenPositions(containerHeight, elementHeight, oneInsideElements.length);
+
+gsap.set(oneElement, { 
+  position: 'relative',
+  overflow: 'hidden'
+});
+
+// Percentage for indentation when text is at the bottom, not in active state
+const marginPercentStep = 7; // For example, a step of 7%
+
+// Set initial positions of elements in reverse order
+oneInsideElements.forEach((element, index) => {
+  const reverseIndex = oneInsideElements.length - 1 - index;
+  const marginBottomPercent = reverseIndex * marginPercentStep;
+  gsap.set(element, { 
+    position: 'absolute',
+		bottom: `${marginBottomPercent}%`, 
+    left: 0,
+    right: 0,
+    zIndex: index + 1
+  });
+});
+
+
+oneInsideElements.forEach((element, index) => {
+  const targetTop = spaceBetweenPositions[index];
+  animGsap.to(element, {
+    top: targetTop,
+    bottom: 'auto',
+    ease: 'power1.out',
+    duration: 3,
+  }, index * 6);
+});
+
+animGsap.to({}, {duration: 0.5});
+
+
+
+
+
+// Animation of text from translucent to black + animation of line movement and image changes
+const technologyTextItem = document.querySelectorAll('.technology-text-item');
+const secondaryTxt = document.querySelectorAll('.secondary-txt');
+const progressLineDot = document.querySelector('.progress-line-dot');
+const progressLineVertical = document.querySelector('.progress-line-vertical');
+const progresslineActive = document.querySelector('.progress-line-active');
+const technologyImagesItem = document.querySelectorAll('.technology-images-item');
+
+
+let progressLineHeight = progressLineVertical.clientHeight;
+let stepHeight = progressLineHeight / (secondaryTxt.length - 1); 
+
+
+let animationGsap = gsap.timeline({
+  scrollTrigger: {
+    trigger: '.section_solution-tech', 
+    start: 'top 10%',  
+    end: 'bottom 10%',     
+    scrub: true,
+  }
+});
+
+animationGsap
+  .fromTo(technologyTextItem,{autoAlpha: .2}, {autoAlpha: 1, stagger: 1, ease: 'power1.out'})
+  .fromTo(technologyImagesItem, {autoAlpha: 0}, {autoAlpha: 1, stagger: 1, ease: 'power1.out'}, '<')
+  .fromTo(secondaryTxt, {autoAlpha: 0}, {autoAlpha: 1, ease: 'power1.out', stagger: 1}, '<')
+  .to(technologyTextItem, {autoAlpha: .2, stagger: 1, ease: 'power1.out'}, '<1')
+  .to(secondaryTxt, {autoAlpha: 0, stagger: 1, ease: 'power1.out'}, '<')
+  .to(progressLineDot, {
+    y: () => progressLineHeight, 
+    ease: 'none',
+    duration: secondaryTxt.length ,
+  }, 0)
+  .from(progresslineActive, {height: '0%', duration: secondaryTxt.length, ease: 'none'}, 0)
+  
+  
+  }, 500); 
+
+</script>
+<!---------------------- Tech ---------------------->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+setTimeout(() => {
+		document.querySelector(".dropdown-values-extra[data-mobile]").children[0].click();
+}, 2000);
+});
+</script>

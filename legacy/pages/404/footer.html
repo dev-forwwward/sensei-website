@@ -1,0 +1,11 @@
+<script>
+document.querySelectorAll('.error-marquee-container').forEach((marquee) => {
+    marquee.addEventListener('mouseenter', () => {
+        marquee.style.animationPlayState = 'paused';
+    });
+    marquee.addEventListener('mouseleave', () => {
+        marquee.style.animationPlayState = 'running';
+    });
+});
+
+</script>
