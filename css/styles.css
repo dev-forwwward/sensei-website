@@ -12,6 +12,7 @@
 
 /* Page CSS (was in each page's head code) — scoped by html[data-wf-page], render-blocking */
 @import url('pages/careers.css?v=ad2175f8');
+@import url('pages/how-it-works.css?v=5ddea7cf');
 
 
 /* FWD white-label defaults — disabled while Sensei runs its legacy menu / accordions.

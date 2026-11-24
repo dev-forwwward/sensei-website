@@ -25,6 +25,7 @@ const modules = [
 // (page code used to come after the site footer code).
 const pages = {
     '6ae1d1264629dc4e90df3ab1': { path: 'pages/careers', exportName: 'careersInit' }, // /careers
+    '6aec7413ae73f59f7e35fef4': { path: 'pages/how-it-works', exportName: 'howItWorksInit' }, // /how-it-works
 };
 
 const pageModule = pages[document.documentElement.dataset.wfPage];

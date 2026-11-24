@@ -146,6 +146,19 @@ _No inline section comments found — see source for details._
 - Set active classes
 - CAREERS: Fade in on scroll — ScrollTrigger.batch
 
+### [`js/pages/how-it-works.js`](js/pages/how-it-works.js) — `howItWorksInit()`
+
+- HOW IT WORKS: "See" + "Understand" accordions open vertically on desktop
+- take over the clicks — in the capture phase, so the Webflow interaction never sees
+- them — and open/close panels by height, like the tablet/mobile interaction already
+- does. Below 992px nothing changes: Webflow's own interaction keeps running.
+- Webflow marks the initially open panel with the .active combo class
+- Desktop start state: open panel auto height, others closed
+- Keep the clicked header in view when a panel above it just closed
+- One panel is always open, like the tablet/mobile interaction: clicking the
+- open panel's header does nothing
+- panels still navigate: stopPropagation doesn't cancel the default action.
+
 ### [`js/utils/helpers.js`](js/utils/helpers.js) — `runBlocks()`, `loadScript()`
 
 - Shared helpers, passed to every init function by script-loader.js
@@ -179,6 +192,10 @@ _Not currently imported by `css/styles.css` — verify it is still in use._
 Root stylesheet.
 
 ### [`css/pages/careers.css`](css/pages/careers.css)
+
+Imported by `css/styles.css`.
+
+### [`css/pages/how-it-works.css`](css/pages/how-it-works.css)
 
 Imported by `css/styles.css`.
 

@@ -1,0 +1,73 @@
+/*
+*   HOW IT WORKS — "See" + "Understand" accordions (Relume layout351, 2 sections)
+*
+*   On desktop the panels opened sideways (Webflow interaction animating width), which
+*   squeezed the content while opening. Desktop now uses the same vertical layout as
+*   tablet: these rules are Relume's own (max-width: 991px) values for the layout351
+*   classes, applied from 992px up. js/pages/how-it-works.js opens/closes the panels
+*   by height on desktop. Desktop content inside the panels is unchanged.
+*
+*   Scope wrapped in :where() so every rule keeps the specificity Webflow's would have.
+*/
+
+@media screen and (min-width: 992px) {
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_content {
+		border-bottom: 1px solid #1d1d1d80;
+		border-left-style: none;
+		border-left-width: 0;
+		flex-direction: column;
+		height: auto;
+	}
+
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_content.white-border {
+		border-bottom-color: #ffffff80;
+	}
+
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_accordion {
+		border-right-style: none;
+		border-right-width: 0;
+		flex-direction: column;
+		width: 100%;
+		min-width: auto;
+		height: auto;
+	}
+
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_column {
+		grid-column-gap: 1rem;
+		grid-row-gap: 1rem;
+		border-top: 1px solid #1d1d1d80;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+		width: 100%;
+		min-width: 100%;
+		height: 5rem;
+	}
+
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_column.white-border {
+		border-top-color: #ffffff80;
+	}
+
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_column-vertical-text {
+		display: none;
+	}
+
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_column-horiztonal-text {
+		font-size: 1.125rem;
+		font-weight: 400;
+		display: block;
+	}
+
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_column-content {
+		width: 100%;
+		min-width: auto;
+		height: auto;
+		overflow: hidden;
+	}
+
+	/* Closed panels start collapsed before the JS runs (no flash of all three open);
+	   the JS then drives the height inline */
+	:where(html[data-wf-page="6aec7413ae73f59f7e35fef4"]) .layout351_accordion:not(.active) .layout351_column-content {
+		height: 0;
+	}
+}
