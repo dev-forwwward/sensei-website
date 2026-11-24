@@ -1,9 +1,11 @@
 // Cache-busted dynamic imports: jsdelivr/browsers cache static `import` specifiers
 // hard (branch-alias staleness even after purge). A fresh query param per load
-// forces a real fetch every time, so pushes to main show up immediately
+// forces a real fetch every time, so pushes to main show up immediately.
+// Modules therefore don't `import` each other — shared helpers are passed to each
+// init function instead (see `helpers` below).
 const v = Date.now();
 
-// Add a script here to have it loaded and initialized automatically
+// Site-wide modules: loaded and initialized on every page, in this order
 const modules = [
     // Sensei legacy site code (was Webflow site footer custom code) — runs first
     { path: 'legacy-site', exportName: 'legacySiteInit' },
@@ -18,14 +20,27 @@ const modules = [
     // { path: 'faqs', exportName: 'faqs' },         // legacy pages use their own accordions
 ];
 
+// Page modules: picked by the Webflow page id on <html data-wf-page="…">.
+// CMS items carry their template's id. Run after the site-wide modules
+// (page code used to come after the site footer code).
+const pages = {
+    '6ae1d1264629dc4e90df3ab1': { path: 'pages/careers', exportName: 'careersInit' }, // /careers
+};
+
+const pageModule = pages[document.documentElement.dataset.wfPage];
+const toLoad = pageModule ? [...modules, pageModule] : modules;
+
 let inits = [];
+let helpers = {};
 try {
-    const loaded = await Promise.all(
-        modules.map(({ path }) => import(`./${path}.js?v=${v}`))
-    );
+    const [utils, ...loaded] = await Promise.all([
+        import(`./utils/run-blocks.js?v=${v}`),
+        ...toLoad.map(({ path }) => import(`./${path}.js?v=${v}`)),
+    ]);
+    helpers = { runBlocks: utils.runBlocks };
     inits = loaded.map((mod, i) => ({
-        name: modules[i].exportName,
-        fn: mod[modules[i].exportName],
+        name: toLoad[i].exportName,
+        fn: mod[toLoad[i].exportName],
     }));
 } catch (err) {
     console.error('Failed to load one or more scripts:', err);
@@ -43,7 +58,7 @@ function init() {
                 return;
             }
             try {
-                fn();
+                fn(helpers);
             } catch (err) {
                 console.error(`[script-loader] ${name}() failed:`, err);
             }

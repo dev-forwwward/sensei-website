@@ -9,6 +9,8 @@ The exact code to paste into Webflow (Site settings → Custom code) is kept in 
 - [`webflow/site-head.html`](webflow/site-head.html) — tracking tags (GTM, Hotjar, Leadfeeder), critical inline CSS, CSS loader
 - [`webflow/site-footer.html`](webflow/site-footer.html) — GSAP / ScrollTrigger / ScrollToPlugin / SplitType, JS loader
 
+Page-specific code: [`webflow/pages/<page>-head.html` / `-footer.html`](webflow/pages/) go in that page's settings (Page settings → Custom code). They only hold libraries and critical inline CSS; the page JS is in `js/pages/`.
+
 Add `?dev=true` to any page URL to load `css/` and `js/` from a local server on `http://127.0.0.1:5500` (e.g. VS Code Live Server) instead of jsDelivr.
 
 ## Legacy code
@@ -16,7 +18,7 @@ Add `?dev=true` to any page URL to load `css/` and `js/` from a local server on 
 The site's original custom code (from the previous agency) is kept in two forms:
 
 - **Snapshot** — [`legacy/`](legacy/) holds a byte-for-byte copy of every site and page custom code block as of 2026-11-24, plus copies of the CodeSandbox-hosted scripts some pages load. It isn't loaded by the site; use it to look things up or roll back. See [`legacy/README.md`](legacy/README.md).
-- **Served** — the site-level legacy JS and CSS now load from this repo: [`js/legacy-site.js`](js/legacy-site.js) and [`css/legacy-site.css`](css/legacy-site.css). Page-level legacy code is **still in Webflow page settings**.
+- **Served** — the site-level legacy JS and CSS now load from this repo: [`js/legacy-site.js`](js/legacy-site.js) and [`css/legacy-site.css`](css/legacy-site.css). Page-level code is moving page by page into [`js/pages/`](js/pages/) (done: Careers); the rest is **still in Webflow page settings**.
 
 While the legacy code is live, these FWD white-label modules are switched off in [`js/script-loader.js`](js/script-loader.js) because they clash with it: `main` (Lenis), `menu`, `swiper`, `form`, `faqs`. `css/menu.css` and `css/faqs.css` are likewise not imported.
 
@@ -29,6 +31,10 @@ While the legacy code is live, these FWD white-label modules are switched off in
 - Exposes global breakpoints (`window.tabletBreakpoint = 991`, `window.mobileBreakpoint = 767`) for other modules to consume.
 
 Add a new module to the `modules` array in `script-loader.js` to have it loaded and initialized automatically.
+
+Page modules live in `js/pages/` and are listed in the `pages` map in `script-loader.js`, keyed by the Webflow page id that Webflow puts on `<html data-wf-page="…">` (CMS items carry their template's id). Find a page's id in the page source or via the Webflow API. Page modules run after the site-wide ones.
+
+Every init function receives `{ runBlocks }` from the loader ([`js/utils/run-blocks.js`](js/utils/run-blocks.js), imported cache-busted). Modules don't `import` each other, because jsDelivr/browser caching of static imports would serve stale code for up to 7 days.
 
 ## Features
 

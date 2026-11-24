@@ -17,7 +17,8 @@ Webflow at that moment, no edits.
 | Site footer: GSAP / ScrollTrigger / ScrollToPlugin / SplitType | Webflow site footer ([`../webflow/site-footer.html`](../webflow/site-footer.html)) | Page code depends on these globals |
 | Site footer: inline JS (menus, testimonials, values, dropdowns…) | [`../js/legacy-site.js`](../js/legacy-site.js) | Loaded by `js/script-loader.js` |
 | Site footer: values-tab `<style>` | [`../css/legacy-site.css`](../css/legacy-site.css) | |
-| **Page-level code (table below)** | **Still in Webflow page settings** | Not migrated yet |
+| Page code: `/careers` | [`../js/pages/careers.js`](../js/pages/careers.js) + Webflow page settings ([`../webflow/pages/careers-*.html`](../webflow/pages/)) | Libraries + anti-flash CSS stay in Webflow |
+| **Other page-level code (table below)** | **Still in Webflow page settings** | Not migrated yet |
 
 ## Snapshot contents
 

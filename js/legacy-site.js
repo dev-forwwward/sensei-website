@@ -594,14 +594,9 @@ const blocks = {
     footerAndNav,
 };
 
-export function legacySiteInit() {
-    Object.entries(blocks).forEach(([name, block]) => {
-        try {
-            block();
-        } catch (err) {
-            console.warn(`[legacy-site] ${name} failed:`, err);
-        }
-    });
+// runBlocks is passed in by script-loader.js (cache-busted import of utils/run-blocks.js)
+export function legacySiteInit({ runBlocks }) {
+    runBlocks('legacy-site', blocks);
 
     console.log("Loading legacySiteInit()");
 }
