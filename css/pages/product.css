@@ -1,0 +1,23 @@
+/*
+*   PRODUCT — "Your data, your rules" cards (Relume testimonial51, Webflow slider)
+*
+*   Webflow slides are inline-block, so each card took the height of its own text and
+*   the row looked ragged. The mask becomes a flex row so every slide stretches to the
+*   tallest one, the card fills its slide, and the text sits right under the image
+*   (instead of being pushed to the bottom by space-between) so titles line up.
+*   Slide widths and the slider's translateX movement are unchanged.
+*/
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .testimonial51_mask {
+	display: flex;
+}
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .testimonial51_slide {
+	flex: none;
+	height: auto;
+}
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .testimonial51_card {
+	height: 100%;
+	justify-content: flex-start;
+}

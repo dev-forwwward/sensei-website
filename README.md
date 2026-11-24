@@ -207,6 +207,10 @@ Imported by `css/styles.css`.
 
 Imported by `css/styles.css`.
 
+### [`css/pages/product.css`](css/pages/product.css)
+
+Imported by `css/styles.css`.
+
 <!-- AUTO-GENERATED:FEATURES:END -->
 
 ## Deployment
