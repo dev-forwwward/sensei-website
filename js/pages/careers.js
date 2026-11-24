@@ -3,13 +3,15 @@
  * (verbatim snapshot: legacy/pages/careers/, taken 2026-11-24).
  *
  * Bodies kept as-is; each original <script> block is a function run in isolation.
- * Libraries stay in the page's Webflow custom code (webflow/pages/careers-*.html):
- * Swiper 14.4.0 (+ CSS) and the trail-image CSS. GSAP/ScrollTrigger come from the
- * site footer.
+ * The page's Webflow custom code is now empty — everything lives in the repo:
+ * - Swiper JS 14.4.0: loaded below before the blocks run;
+ * - Swiper CSS + trail-image CSS: @import in css/styles.css (render-blocking);
+ * - page CSS / anti-flash rules: css/pages/careers.css (scoped to this page);
+ * - GSAP/ScrollTrigger: site footer.
  *
  * Changes vs the original:
- * - [data-fade-in] (and [data-img-sticker] on mobile) are hidden by inline CSS in the
- *   page head, because this now runs after first paint;
+ * - [data-fade-in] (and [data-img-sticker] on mobile) are hidden by css/pages/careers.css
+ *   before first paint, because this now runs later;
  * - the trail-image library is run in its own function scope (trailImage below),
  *   which fixes its global `class Image` breaking Typekit's `new Image()`;
  * - dropped unused Draggable and the async GSAP 3.12.2 that replaced the site's GSAP.
@@ -304,8 +306,11 @@ async function trailImage() {
     new Function('Webflow', code)(window.Webflow);
 }
 
-// runBlocks is passed in by script-loader.js (cache-busted import of utils/run-blocks.js)
-export function careersInit({ runBlocks }) {
+// Same file unpkg.com/swiper (unversioned) served when this was ported
+const SWIPER_URL = 'https://cdn.jsdelivr.net/npm/swiper@14.4.0/swiper-bundle.min.js';
+
+// runBlocks / loadScript are passed in by script-loader.js (utils/helpers.js)
+export async function careersInit({ runBlocks, loadScript }) {
     // Old inline page code still in Webflow? Its top-level `const initProcessTimeline`
     // lives in the shared global scope, visible from here. Skip so nothing runs twice;
     // this lets main be pushed before or after the Webflow page code is swapped.
@@ -313,6 +318,8 @@ export function careersInit({ runBlocks }) {
         console.info('[careers] old inline page code still in Webflow — skipping careersInit()');
         return;
     }
+
+    await loadScript(SWIPER_URL);
 
     runBlocks('careers', {
         accordions,

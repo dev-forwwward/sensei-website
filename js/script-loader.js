@@ -34,10 +34,10 @@ let inits = [];
 let helpers = {};
 try {
     const [utils, ...loaded] = await Promise.all([
-        import(`./utils/run-blocks.js?v=${v}`),
+        import(`./utils/helpers.js?v=${v}`),
         ...toLoad.map(({ path }) => import(`./${path}.js?v=${v}`)),
     ]);
-    helpers = { runBlocks: utils.runBlocks };
+    helpers = { runBlocks: utils.runBlocks, loadScript: utils.loadScript };
     inits = loaded.map((mod, i) => ({
         name: toLoad[i].exportName,
         fn: mod[toLoad[i].exportName],
@@ -57,8 +57,9 @@ function init() {
                 console.warn(`[script-loader] ${name} is not exported`);
                 return;
             }
+            // Inits may be async (e.g. a page loading its libraries first)
             try {
-                fn(helpers);
+                Promise.resolve(fn(helpers)).catch((err) => console.error(`[script-loader] ${name}() failed:`, err));
             } catch (err) {
                 console.error(`[script-loader] ${name}() failed:`, err);
             }

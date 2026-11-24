@@ -61,7 +61,7 @@ function isFullyCommentedOut(content) {
 
 function extractExportedFunctions(content) {
     const fns = [];
-    const re = /export\s+function\s+(\w+)\s*\(/g;
+    const re = /export\s+(?:async\s+)?function\s+(\w+)\s*\(/g;
     let m;
     while ((m = re.exec(content))) fns.push(m[1]);
     return fns;
@@ -102,7 +102,8 @@ function getStyleImports() {
     if (!fs.existsSync(stylesPath)) return [];
     // Strip CSS comments first so a commented-out @import isn't counted as active.
     const content = fs.readFileSync(stylesPath, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-    const re = /@import\s+url\(['"]?([\w.-]+)['"]?\)/g;
+    // Local imports only; allows sub-folders (pages/x.css) and a ?v= content hash
+    const re = /@import\s+url\(['"]?([\w./-]+?\.css)(?:\?[^'")]*)?['"]?\)/g;
     const imports = [];
     let m;
     while ((m = re.exec(content))) imports.push(m[1]);
@@ -110,8 +111,15 @@ function getStyleImports() {
 }
 
 function build() {
-    const jsFiles = readDirSafe(JS_DIR, '.js').filter((f) => f !== LOADER_FILE);
-    const cssFiles = readDirSafe(CSS_DIR, '.css');
+    // Top level + one level of sub-folders (js/pages, js/utils, css/pages)
+    const withSubdirs = (dir, ext) => [
+        ...readDirSafe(dir, ext),
+        ...fs.readdirSync(dir, { withFileTypes: true })
+            .filter((d) => d.isDirectory())
+            .flatMap((d) => readDirSafe(path.join(dir, d.name), ext).map((f) => `${d.name}/${f}`)),
+    ];
+    const jsFiles = withSubdirs(JS_DIR, '.js').filter((f) => f !== LOADER_FILE);
+    const cssFiles = withSubdirs(CSS_DIR, '.css');
     const styleImports = getStyleImports();
 
     const jsSection = jsFiles.map(describeJsFile).join('\n\n');

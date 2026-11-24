@@ -1,4 +1,4 @@
-name: Update README Features
+name: Update README Features + CSS import versions
 
 on:
   push:
@@ -29,16 +29,33 @@ jobs:
       - name: Regenerate README features section
         run: node scripts/generate-readme.js
 
+      - name: Stamp local CSS @imports with content hashes
+        run: node scripts/version-css-imports.js
+
       - name: Commit changes if any
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          if git diff --quiet -- README.md; then
-            echo "README.md unchanged, nothing to commit."
+          if git diff --quiet -- README.md css; then
+            echo "README.md and css/ unchanged, nothing to commit."
             exit 0
           fi
 
-          git add README.md
-          git commit -m "docs: auto-update README features [skip readme]"
+          # Remember which CSS files this job rewrote, for the purge step below
+          git diff --name-only -- css > /tmp/changed-css.txt
+
+          git add README.md css
+          git commit -m "chore: auto-update README features + CSS import versions [skip readme]"
           git push origin HEAD:main
+
+      # Pushes made with GITHUB_TOKEN don't trigger other workflows, so
+      # purge-jsdelivr.yml won't run for the commit above: purge here instead.
+      - name: Purge jsDelivr for rewritten CSS
+        run: |
+          [ -s /tmp/changed-css.txt ] || exit 0
+          while IFS= read -r file; do
+            url="https://purge.jsdelivr.net/gh/${{ github.repository }}@main/${file}"
+            printf 'Purging %s ... ' "$file"
+            curl -fsS "$url" >/dev/null && echo OK || echo FAILED
+          done < /tmp/changed-css.txt

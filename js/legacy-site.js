@@ -594,7 +594,7 @@ const blocks = {
     footerAndNav,
 };
 
-// runBlocks is passed in by script-loader.js (cache-busted import of utils/run-blocks.js)
+// runBlocks is passed in by script-loader.js (cache-busted import of utils/helpers.js)
 export function legacySiteInit({ runBlocks }) {
     runBlocks('legacy-site', blocks);
 

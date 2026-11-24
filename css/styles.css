@@ -1,5 +1,15 @@
 /* Sensei legacy site styles (ported from Webflow site custom code) */
-@import url('legacy-site.css');
+@import url('legacy-site.css?v=4519a066');
+
+/* Vendor CSS that pages used to link in their own head code (exact versions; harmless
+   on pages without these components). Was after the site head CSS, so it comes after
+   legacy-site.css here too. */
+@import url('https://cdn.jsdelivr.net/npm/swiper@14.4.0/swiper-bundle.min.css');
+@import url('https://cdn.jsdelivr.net/gh/francesco-castronuovo/gsap-trail-image-effect@1.0.2/style.css');
+
+/* Page CSS (was in each page's head code) — scoped by html[data-wf-page], render-blocking */
+@import url('pages/careers.css?v=22ad65d0');
+
 
 /* FWD white-label defaults — disabled while Sensei runs its legacy menu / accordions.
    Re-enable together with the matching modules in js/script-loader.js. */

@@ -1,0 +1,23 @@
+/*
+*   CAREERS PAGE — was in Webflow Page settings > Custom code > Inside <head>
+*   (snapshot: legacy/pages/careers/head.html). Scoped to the Careers page id so it
+*   only applies there, like before. Loaded render-blocking via css/styles.css, so the
+*   "hidden until JS reveals it" rules apply before first paint.
+*/
+
+/* Revealed by the careers process swiper / Webflow interactions */
+html[data-wf-page="6ae1d1264629dc4e90df3ab1"] .swiper-slide.is-careers-process {
+	opacity: 0;
+}
+
+/* Fade in on scroll (js/pages/careers.js → fadeIn): gsap.set used to hide these during
+   page parse; the JS now runs later, so they're hidden here and revealed by the JS */
+html[data-wf-page="6ae1d1264629dc4e90df3ab1"] [data-fade-in] {
+	opacity: 0;
+}
+
+@media (max-width: 991px) {
+	html[data-wf-page="6ae1d1264629dc4e90df3ab1"] [data-img-sticker] {
+		opacity: 0;
+	}
+}

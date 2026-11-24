@@ -9,7 +9,13 @@ The exact code to paste into Webflow (Site settings → Custom code) is kept in 
 - [`webflow/site-head.html`](webflow/site-head.html) — tracking tags (GTM, Hotjar, Leadfeeder), critical inline CSS, CSS loader
 - [`webflow/site-footer.html`](webflow/site-footer.html) — GSAP / ScrollTrigger / ScrollToPlugin / SplitType, JS loader
 
-Page-specific code: [`webflow/pages/<page>-head.html` / `-footer.html`](webflow/pages/) go in that page's settings (Page settings → Custom code). They only hold libraries and critical inline CSS; the page JS is in `js/pages/`.
+**Page settings custom code stays empty** for migrated pages. Everything a page needs lives here:
+
+- JS → `js/pages/<page>.js`, picked by the Webflow page id (see below); it loads its own libraries (pinned versions) with `loadScript` before running.
+- CSS, including "hidden until JS reveals it" rules → `css/pages/<page>.css`, every selector scoped with `html[data-wf-page="<page id>"]`, imported in `css/styles.css`.
+- Vendor CSS (Swiper, …) → `@import` at the top of `css/styles.css`.
+
+`css/styles.css` is loaded render-blocking from the site head (`document.write`), so page CSS applies before first paint like the inline `<style>` it replaced. Local `@import`s carry a content hash (`?v=…`), stamped by [`scripts/version-css-imports.js`](scripts/version-css-imports.js) in CI, so browsers never keep stale page CSS.
 
 Add `?dev=true` to any page URL to load `css/` and `js/` from a local server on `http://127.0.0.1:5500` (e.g. VS Code Live Server) instead of jsDelivr.
 
@@ -34,7 +40,7 @@ Add a new module to the `modules` array in `script-loader.js` to have it loaded 
 
 Page modules live in `js/pages/` and are listed in the `pages` map in `script-loader.js`, keyed by the Webflow page id that Webflow puts on `<html data-wf-page="…">` (CMS items carry their template's id). Find a page's id in the page source or via the Webflow API. Page modules run after the site-wide ones.
 
-Every init function receives `{ runBlocks }` from the loader ([`js/utils/run-blocks.js`](js/utils/run-blocks.js), imported cache-busted). Modules don't `import` each other, because jsDelivr/browser caching of static imports would serve stale code for up to 7 days.
+Every init function receives `{ runBlocks, loadScript }` from the loader ([`js/utils/helpers.js`](js/utils/helpers.js), imported cache-busted). Modules don't `import` each other, because jsDelivr/browser caching of static imports would serve stale code for up to 7 days.
 
 ## Features
 
@@ -117,6 +123,25 @@ _Entire file is commented out — not currently active or wired into `script-loa
 
 _No inline section comments found — see source for details._
 
+### [`js/pages/careers.js`](js/pages/careers.js) — `careersInit()`
+
+- CAREERS: Benefits accordions
+- CAREERS: Benefits swiper
+- CAREERS: Custom cursors — desktop only
+- CAREERS: Careers process timeline + swiper
+- Initialize Swiper
+- Create timeline elements
+- Handle progress updates
+- Reset all classes
+- Set active classes
+- CAREERS: Fade in on scroll — ScrollTrigger.batch
+
+### [`js/utils/helpers.js`](js/utils/helpers.js) — `runBlocks()`, `loadScript()`
+
+- Shared helpers, passed to every init function by script-loader.js
+- is logged and doesn't stop the others — same as separate <script> tags behaved.
+- Use exact, pinned versions.
+
 ## Stylesheets
 
 ### [`css/faqs.css`](css/faqs.css)
@@ -138,6 +163,10 @@ _Not currently imported by `css/styles.css` — verify it is still in use._
 ### [`css/styles.css`](css/styles.css)
 
 Root stylesheet.
+
+### [`css/pages/careers.css`](css/pages/careers.css)
+
+Imported by `css/styles.css`.
 
 <!-- AUTO-GENERATED:FEATURES:END -->
 
