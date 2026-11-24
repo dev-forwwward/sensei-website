@@ -1,6 +1,9 @@
 /* Sensei legacy site styles (ported from Webflow site custom code) */
 @import url('legacy-site.css?v=4519a066');
 
+/* Classes used only inside Webflow Embeds (Webflow's style cleanup deletes them) */
+@import url('embed-classes.css?v=eb267cee');
+
 /* Vendor CSS that pages used to link in their own head code (exact versions; harmless
    on pages without these components). Was after the site head CSS, so it comes after
    legacy-site.css here too. */

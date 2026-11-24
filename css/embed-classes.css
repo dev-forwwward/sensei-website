@@ -1,0 +1,36 @@
+/*
+*   STYLES FOR CLASSES USED ONLY INSIDE WEBFLOW EMBEDS
+*
+*   Webflow's "Clean up unused styles" can't see classes that only appear inside
+*   Embed elements (w-embed), so it deletes their styles. On sensei-staging-2026 that
+*   removed these, and e.g. the Company quote icons grew to 870px (nothing sized them,
+*   and legacy `svg { width: 100% }` took over). Keeping them here means a Designer
+*   cleanup can't remove them again.
+*
+*   Rules copied verbatim from www.sensei.tech's Webflow CSS (2026-11-24). Plain class
+*   selectors, same specificity as in Webflow.
+*/
+
+/* Company page — quote (section_company-quote) */
+.company-quote_icon {
+    width: .777778em;
+    height: .777778em;
+    display: inline-block;
+}
+
+.company-quote_text {
+    display: inline-block;
+}
+
+.company-quote_underline {
+    text-underline-offset: .15em;
+    text-decoration: underline;
+    text-decoration-thickness: .06em;
+}
+
+/* Partners page — quote */
+.partners-quote_icon {
+    width: .777778em;
+    height: .777778em;
+    display: inline-block;
+}

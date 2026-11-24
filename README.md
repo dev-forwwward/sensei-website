@@ -144,6 +144,10 @@ _No inline section comments found — see source for details._
 
 ## Stylesheets
 
+### [`css/embed-classes.css`](css/embed-classes.css)
+
+Imported by `css/styles.css`.
+
 ### [`css/faqs.css`](css/faqs.css)
 
 _Not currently imported by `css/styles.css` — verify it is still in use._
