@@ -23,8 +23,8 @@ const ROTATING_WORDS = [
 ];
 
 function rotatingWords() {
-    const HOLD = 2;        // seconds each word stays
-    const DURATION = 0.6;  // seconds per slide
+    const HOLD = 1.4;      // seconds each word stays
+    const DURATION = 0.5;  // seconds per slide
     const EASE = 'power3.inOut';
 
     document.querySelectorAll('.fwd_rotating-word-wrapper').forEach((wrapper) => {
