@@ -5,7 +5,7 @@
 @import url('embed-classes.css?v=eb267cee');
 
 /* Mobile / tablet navbar (Relume navbar6, ≤991px) — Figma "menu mobile" */
-@import url('navbar-mobile.css');
+@import url('navbar-mobile.css?v=b5267ab8');
 
 /* Vendor CSS that pages used to link in their own head code (exact versions; harmless
    on pages without these components). Was after the site head CSS, so it comes after

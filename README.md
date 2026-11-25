@@ -123,6 +123,13 @@ _Entire file is commented out — not currently active or wired into `script-loa
 - Initialize
 - Run scroll logic on load in case page is opened mid-scroll
 
+### [`js/navbar-mobile.js`](js/navbar-mobile.js) — `navbarMobile()`
+
+- of Webflow's w-nav / w-dropdown. Look & feel is in css/navbar-mobile.css.
+- start every opening at the top of the list
+- Escape closes the menu and gives focus back to the burger
+- section's title off the top — bring it back under the bar once things settle
+
 ### [`js/swiper.js`](js/swiper.js) — `swiperInit()`
 
 - Init all Swipers
@@ -203,6 +210,10 @@ Imported by `css/styles.css`.
 ### [`css/menu.css`](css/menu.css)
 
 _Not currently imported by `css/styles.css` — verify it is still in use._
+
+### [`css/navbar-mobile.css`](css/navbar-mobile.css)
+
+Imported by `css/styles.css`.
 
 ### [`css/styles.css`](css/styles.css)
 
