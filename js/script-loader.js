@@ -11,6 +11,7 @@ const modules = [
     { path: 'legacy-site', exportName: 'legacySiteInit' },
     { path: 'footer-date', exportName: 'footerDate' },
     { path: 'works', exportName: 'works' },
+    { path: 'navbar-mobile', exportName: 'navbarMobile' }, // Relume navbar6 ≤991px (css/navbar-mobile.css)
 
     // FWD white-label modules disabled while the legacy code is live:
     // { path: 'main', exportName: 'mainInit' },     // Lenis fights legacy jQuery/window scrollTo + ScrollTrigger pins; needs Lenis + Fancybox libs

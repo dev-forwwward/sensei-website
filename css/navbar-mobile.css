@@ -1,0 +1,417 @@
+/*
+ * Mobile / tablet navbar — Relume navbar6 restyled to Figma "menu mobile"
+ * (Sensei Website - Internal, node 3824:16622).
+ *
+ * Keeps the Webflow/Relume structure and behaviour (w-nav, w-dropdown, IX2 height
+ * animation); only look & feel changes here. Applies when the menu collapses
+ * (data-collapse="medium" → ≤991px). Behaviour extras live in js/navbar-mobile.js.
+ *
+ * Open state is read from Webflow's own classes, so the CSS works before JS runs:
+ *   .w-nav-button.w--open        → menu open (added/removed instantly on toggle)
+ *   .w-nav-menu[data-nav-menu-open] → menu rendered in the overlay (removed after close)
+ */
+
+@media screen and (max-width: 991px) {
+
+    /* ---------- Bar (closed) ---------- */
+
+    .navbar6_component {
+        height: auto;
+        min-height: 0;
+        margin-top: 16px; /* logo/burger land at 20px, same spot as in the open panel */
+        padding: 4px;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.6);
+        -webkit-backdrop-filter: blur(13.2px);
+        backdrop-filter: blur(13.2px);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .navbar6_component > .navbar6_container {
+        position: relative;
+        z-index: 3; /* above the full-screen overlay (1) and the header band (2) */
+        height: 32px;
+        align-items: center;
+    }
+
+    .navbar6_logo-link-m,
+    .navbar6_logo-link-m .navbar6_logo {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+    }
+
+    /* Burger: yellow 32px chip, two thin lines → X (replaces Relume's 3-bar IX icon) */
+    .navbar6_menu-button,
+    .navbar6_menu-button.w--open {
+        position: relative;
+        display: flex;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: var(--sizes--border-radius, 4px);
+        background-color: var(--colors--yellow, #f8fd8f);
+        color: var(--colors--black, #1d1d1d);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .navbar6_menu-button .menu-icon5 {
+        display: none;
+    }
+
+    .navbar6_menu-button::before,
+    .navbar6_menu-button::after {
+        content: '';
+        position: absolute;
+        left: 8px;
+        width: 16px;
+        height: 1px;
+        background-color: currentColor;
+        transition: transform 0.3s ease, top 0.3s ease, left 0.3s ease, width 0.3s ease;
+    }
+
+    .navbar6_menu-button::before { top: 11px; }
+    .navbar6_menu-button::after { top: 20px; }
+
+    .navbar6_menu-button.w--open::before,
+    .navbar6_menu-button.w--open::after {
+        top: 15.5px;
+        left: 6.5px;
+        width: 19px;
+    }
+
+    .navbar6_menu-button.w--open::before { transform: rotate(45deg); }
+    .navbar6_menu-button.w--open::after { transform: rotate(-45deg); }
+
+    .navbar6_menu-button:focus-visible {
+        outline: 1px solid var(--colors--black, #1d1d1d);
+        outline-offset: 2px;
+    }
+
+    /* ---------- Open: full-screen panel ---------- */
+
+    /* backdrop-filter on the bar would make it the containing block of the
+       fixed overlay — drop it while open; the panel carries the blur instead. */
+    .navbar6_component:has(.w-nav-button.w--open) {
+        background-color: transparent;
+        border-color: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    /* Header band behind logo + close, so the list never scrolls under them */
+    .navbar6_component:has(.w-nav-button.w--open)::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 72px;
+        z-index: 2;
+        background-color: rgb(248, 247, 244);
+        pointer-events: none;
+    }
+
+    /* Webflow sets the overlay's height to the document height inline */
+    .navbar6_component .w-nav-overlay {
+        position: fixed;
+        inset: 0;
+        top: 0 !important;
+        width: 100%;
+        height: 100vh !important;
+        height: 100dvh !important;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .navbar6_component .w-nav-overlay .navbar6_menu {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        max-height: none;
+        padding: 88px 24px 40px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        background-color: rgba(248, 247, 244, 0.94);
+        -webkit-backdrop-filter: blur(13.2px);
+        backdrop-filter: blur(13.2px);
+        /* Webflow slides the menu with an inline translateY; fade instead */
+        transform: none !important;
+        transition: opacity 0.25s ease !important;
+    }
+
+    .navbar6_component .w-nav-overlay .navbar6_menu[data-nav-menu-open] {
+        animation: navbar-mobile-in 0.35s ease backwards;
+    }
+
+    .navbar6_component:not(:has(.w-nav-button.w--open)) .w-nav-overlay .navbar6_menu {
+        opacity: 0;
+    }
+
+    @keyframes navbar-mobile-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* ---------- Top-level items ---------- */
+
+    .navbar6_menu .navbar6_menu-left {
+        width: 100%;
+        align-items: stretch;
+        gap: 0;
+    }
+
+    .navbar6_menu .navbar6_menu-dropdown {
+        width: 100%;
+    }
+
+    .navbar6_menu .navbar6_dropdown-toggle,
+    .navbar6_menu .navbar6_link {
+        display: flex;
+        width: 100%;
+        min-height: 48px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px 12px 0;
+        font-size: 20px;
+        line-height: 1.2;
+        color: var(--colors--black, #1d1d1d);
+    }
+
+    .navbar6_menu .navbar6_dropdown-toggle > .body-l-regular_custom {
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    .navbar6_menu .dropdown-chevron {
+        display: flex;
+        width: 10px;
+        flex: none;
+    }
+
+    .navbar6_menu .navbar6_dropdown-list {
+        position: relative;
+        background-color: transparent;
+    }
+
+    .navbar6_menu .navbar6_dropdown-list > .navbar6_container {
+        width: 100%;
+        padding: 0;
+    }
+
+    /* 16px under the toggle, 28px before the next item (Figma 12 + 16) */
+    .navbar6_menu .navbar6_dropdown-content {
+        padding: 4px 0 28px;
+    }
+
+    /* Sections that end in a card (blog posts, partner logos): 12px */
+    .navbar6_menu .navbar6_dropdown-content:has(> .navbar6_dropdown-resources, > .navbar6_dropdown-company) {
+        padding-bottom: 12px;
+    }
+
+    /* ---------- Groups (eyebrow + links) ---------- */
+
+    .navbar6_menu .navbar6_dropdown-solutions,
+    .navbar6_menu .navbar6_dropdown-resources,
+    .navbar6_menu .navbar6_dropdown-company {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        width: 100%;
+    }
+
+    .navbar6_menu .navbar6_dropdown-content .gap_2-5 {
+        gap: 16px;
+    }
+
+    .navbar6_menu .fwd_eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--colors--blue, #2b4bf2);
+    }
+
+    .navbar6_menu .fwd_eyebrow .body-s-regular_custom {
+        font-size: 12px;
+        line-height: 1.3;
+        text-transform: uppercase;
+    }
+
+    .navbar6_menu .fwd_eyebrow .fwd_h_divider {
+        flex: 1 1 0;
+        height: 1px;
+        opacity: 0.3;
+    }
+
+    /* Links: 16px label + small arrow, optional 14px description at 60% */
+    .navbar6_menu .navbar6_dropdown-content .fwd_circle-arrow-hover {
+        display: none;
+    }
+
+    .navbar6_menu .navbar6_dropdown-content .fwd_arrow-link {
+        align-items: flex-start;
+    }
+
+    .navbar6_menu .navbar6_item-right {
+        gap: 0;
+    }
+
+    .navbar6_menu .navbar6_item-right .fwd-display-flex-h {
+        align-items: center;
+        gap: 4px;
+    }
+
+    .navbar6_menu .nav-bar-link-text {
+        font-size: 16px;
+        line-height: 1.3;
+        color: var(--colors--black, #1d1d1d);
+    }
+
+    .navbar6_menu .navbar6_arrow-m {
+        display: flex;
+        width: 8px;
+        flex: none;
+    }
+
+    .navbar6_menu .navbar6_item-right .body-s-regular_custom {
+        font-size: 14px;
+        line-height: 1.3;
+        opacity: 0.6;
+    }
+
+    .navbar6_menu .navbar6_item-right .fwd_max-width-17 {
+        max-width: none;
+    }
+
+    /* ---------- Platform: text list, no thumbnails ---------- */
+
+    .navbar6_menu .navbar6_dropdown-platform {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 0;
+    }
+
+    .navbar6_menu .navbar6_dropdown-platform .navbar6_platform-content {
+        display: block;
+        padding: 0;
+    }
+
+    .navbar6_menu .navbar6_dropdown-platform .navbar6_dropdown-link {
+        padding: 0;
+    }
+
+    .navbar6_menu .navbar6_platform-img-wrapper {
+        display: none;
+    }
+
+    /* ---------- Resources: links first, then blog cards on yellow ---------- */
+
+    .navbar6_menu .navbar6_dropdown-resources > .gap_2-5:has(.fwd_eyebrow) {
+        order: -1;
+    }
+
+    .navbar6_menu .navbar6_dropdown-resources > .gap_2-5:not(:has(.fwd_eyebrow)) {
+        padding: 21px 19px 25px;
+        background-color: var(--colors--yellow, #f8fd8f);
+    }
+
+    .navbar6_menu .navbar6_dropdown-resources .gap_3 {
+        gap: 28px;
+    }
+
+    .navbar6_menu .navbar6_dropdown-resources .w-dyn-item > a {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        color: var(--colors--black, #1d1d1d);
+        text-decoration: none;
+    }
+
+    .navbar6_menu .navbar6_dropdown-resources .w-dyn-item > a > .fwd-display-flex-v {
+        display: contents;
+    }
+
+    .navbar6_menu .navbar6_dropdown-resources .w-dyn-item > a > .fwd-display-flex-v > :first-child {
+        order: -1; /* date above the image */
+        font-size: 14px;
+        line-height: 1.3;
+    }
+
+    .navbar6_menu .navbar6_blog-img-wrapper {
+        width: 100%;
+        height: 174px;
+        overflow: hidden;
+    }
+
+    .navbar6_menu .navbar6_blog-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .navbar6_menu .navbar6_dropdown-resources .w-dyn-item > a .body-l-regular_custom {
+        position: relative;
+        padding-right: 40px;
+        font-size: 18px;
+        line-height: 1.3;
+    }
+
+    /* Circle arrow (same glyph as the site's .fwd_circle-arrow-wrapper-2) */
+    .navbar6_menu .navbar6_dropdown-resources .w-dyn-item > a .body-l-regular_custom::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30px;
+        height: 30px;
+        background-color: currentColor;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M10.875 14.7188L14.7188 10.875L10.875 7.03125L10.2812 7.625L13.0938 10.4375H6.6875V11.3125H13.0938L10.2812 14.125L10.875 14.7188ZM10.8803 21.75C9.37677 21.75 7.96292 21.4647 6.63875 20.8941C5.31458 20.3234 4.16281 19.549 3.18344 18.5706C2.20385 17.5923 1.42844 16.442 0.857187 15.1197C0.285729 13.7972 0 12.3841 0 10.8803C0 9.37677 0.285313 7.96292 0.855938 6.63875C1.42656 5.31458 2.20104 4.16281 3.17938 3.18344C4.15771 2.20385 5.30802 1.42844 6.63031 0.857187C7.95281 0.285729 9.36594 0 10.8697 0C12.3732 0 13.7871 0.285313 15.1113 0.855938C16.4354 1.42656 17.5872 2.20104 18.5666 3.17937C19.5461 4.15771 20.3216 5.30802 20.8928 6.63031C21.4643 7.95281 21.75 9.36594 21.75 10.8697C21.75 12.3732 21.4647 13.7871 20.8941 15.1113C20.3234 16.4354 19.549 17.5872 18.5706 18.5666C17.5923 19.5461 16.442 20.3216 15.1197 20.8928C13.7972 21.4643 12.3841 21.75 10.8803 21.75ZM10.875 20.875C13.6667 20.875 16.0312 19.9062 17.9688 17.9688C19.9062 16.0312 20.875 13.6667 20.875 10.875C20.875 8.08333 19.9062 5.71875 17.9688 3.78125C16.0312 1.84375 13.6667 0.875 10.875 0.875C8.08333 0.875 5.71875 1.84375 3.78125 3.78125C1.84375 5.71875 0.875 8.08333 0.875 10.875C0.875 13.6667 1.84375 16.0312 3.78125 17.9688C5.71875 19.9062 8.08333 20.875 10.875 20.875Z'/%3E%3C/svg%3E") center / contain no-repeat;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M10.875 14.7188L14.7188 10.875L10.875 7.03125L10.2812 7.625L13.0938 10.4375H6.6875V11.3125H13.0938L10.2812 14.125L10.875 14.7188ZM10.8803 21.75C9.37677 21.75 7.96292 21.4647 6.63875 20.8941C5.31458 20.3234 4.16281 19.549 3.18344 18.5706C2.20385 17.5923 1.42844 16.442 0.857187 15.1197C0.285729 13.7972 0 12.3841 0 10.8803C0 9.37677 0.285313 7.96292 0.855938 6.63875C1.42656 5.31458 2.20104 4.16281 3.17938 3.18344C4.15771 2.20385 5.30802 1.42844 6.63031 0.857187C7.95281 0.285729 9.36594 0 10.8697 0C12.3732 0 13.7871 0.285313 15.1113 0.855938C16.4354 1.42656 17.5872 2.20104 18.5666 3.17937C19.5461 4.15771 20.3216 5.30802 20.8928 6.63031C21.4643 7.95281 21.75 9.36594 21.75 10.8697C21.75 12.3732 21.4647 13.7871 20.8941 15.1113C20.3234 16.4354 19.549 17.5872 18.5706 18.5666C17.5923 19.5461 16.442 20.3216 15.1197 20.8928C13.7972 21.4643 12.3841 21.75 10.8803 21.75ZM10.875 20.875C13.6667 20.875 16.0312 19.9062 17.9688 17.9688C19.9062 16.0312 20.875 13.6667 20.875 10.875C20.875 8.08333 19.9062 5.71875 17.9688 3.78125C16.0312 1.84375 13.6667 0.875 10.875 0.875C8.08333 0.875 5.71875 1.84375 3.78125 3.78125C1.84375 5.71875 0.875 8.08333 0.875 10.875C0.875 13.6667 1.84375 16.0312 3.78125 17.9688C5.71875 19.9062 8.08333 20.875 10.875 20.875Z'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+
+    /* ---------- Company: links first, then partner logos on white ---------- */
+
+    .navbar6_menu .navbar6_dropdown-company > .gap_2-5 {
+        order: -1;
+    }
+
+    .navbar6_menu .nav-company-img-wrapper {
+        display: none;
+    }
+
+    .navbar6_menu .navbar6_company-credencials-wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        place-items: center;
+        gap: 28px;
+        width: 100%;
+        padding: 18px 28px;
+        background-color: var(--colors--white, #fff);
+    }
+
+    .navbar6_menu .navbar6_company-credencial {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        opacity: 0.6;
+        mix-blend-mode: multiply;
+    }
+
+    /* ---------- CTA ---------- */
+
+    .navbar6_menu .navbar6_menu-right {
+        margin-top: 12px;
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 991px) and (prefers-reduced-motion: reduce) {
+    .navbar6_menu-button::before,
+    .navbar6_menu-button::after,
+    .navbar6_component .w-nav-overlay .navbar6_menu {
+        transition: none !important;
+        animation: none !important;
+    }
+}
