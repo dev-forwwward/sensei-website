@@ -76,10 +76,63 @@ function rotatingWords() {
     });
 }
 
+// PRODUCT: "Your data, your rules" cards (Webflow slider, .testimonial51_slider)
+// Webflow steps one card per arrow click until the LAST card is the first one shown,
+// which left empty card slots on the right. Stop once the last card is fully in view
+// instead (desktop: 3 of the 9 cards fit, so 6 steps; the last card ends flush with the
+// container, under the arrows). Arrows get .is-disabled at each end (css/pages/product.css).
+// Webflow keeps the index in its inline translateX on every slide; swipes can't be
+// intercepted, so an overshoot from a swipe steps back.
+function cardsSliderEnd() {
+    document.querySelectorAll('.testimonial51_slider').forEach((slider) => {
+        const slides = [...slider.querySelectorAll('.w-slide')];
+        const prev = slider.querySelector('.w-slider-arrow-left');
+        const next = slider.querySelector('.w-slider-arrow-right');
+        if (slides.length < 2 || !prev || !next) return;
+
+        // Slide width (translateX doesn't change it)
+        const step = () => slides[0].getBoundingClientRect().width;
+        const index = () => {
+            const m = /translateX\((-?[\d.]+)px\)/.exec(slides[0].style.transform);
+            return m ? Math.round(-parseFloat(m[1]) / step()) : 0;
+        };
+        // First index at which the last card is fully inside the slider
+        const maxIndex = () => Math.max(0, Math.ceil((slides.length * step() - slider.clientWidth - 1) / step()));
+
+        const update = () => {
+            const i = index();
+            const max = maxIndex();
+            if (i > max) {
+                prev.click();
+                return;
+            }
+            prev.classList.toggle('is-disabled', i <= 0);
+            next.classList.toggle('is-disabled', i >= max);
+            prev.setAttribute('aria-disabled', i <= 0);
+            next.setAttribute('aria-disabled', i >= max);
+        };
+
+        // Capture phase on the slider: runs before Webflow's own arrow handlers
+        const block = (e) => {
+            if (!next.contains(e.target) || index() < maxIndex()) return;
+            if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+            e.preventDefault();
+            e.stopPropagation();
+        };
+        slider.addEventListener('click', block, true);
+        slider.addEventListener('keydown', block, true);
+
+        new MutationObserver(update).observe(slides[0], { attributes: true, attributeFilter: ['style'] });
+        window.addEventListener('resize', update);
+        update();
+    });
+}
+
 // runBlocks is passed in by script-loader.js (utils/helpers.js)
 export function productInit({ runBlocks }) {
     runBlocks('product', {
         rotatingWords,
+        cardsSliderEnd,
     });
 
     console.log("Loading productInit()");
