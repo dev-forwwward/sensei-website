@@ -13,22 +13,34 @@ const ARROW_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="11.5" height="
   <path d="M15.5875 21.0969L21.0969 15.5875L15.5875 10.0781L14.7365 10.9292L18.7677 14.9604H9.58542V16.2146H18.7677L14.7365 20.2458L15.5875 21.0969Z" fill="#1D1D1D"/>
 </svg>`;
 
-// HOMEPAGE: "Built for your entire store" cards — yellow arrow circle follows the cursor
+// Card groups that get the cursor follower: section + its cards
+const FOLLOWER_CARDS = [
+    // "Built for your entire store"
+    { section: '.section_layout363', cards: '.layout363_card, .card-row38_card' },
+    // Case studies slider
+    { section: '.section_gallery20', cards: '.header94_card' },
+];
+
+// HOMEPAGE: yellow arrow circle follows the cursor over linked cards
 // Figma (Industries problems, hover on Autonomous Checkout): while the pointer is over a
-// card, the card's outline arrow icon goes away and a 54px yellow circle with the arrow
-// rides on the cursor. One follower for all five cards, fixed to the viewport and moved
-// with clientX/Y (same approach as the white-label mouse follower in js/main.js).
-// Mouse / trackpad only: touch screens keep the static icon.
-function storeCardsHover() {
-    const section = document.querySelector('.section_layout363');
-    if (!section || section.dataset.storeHoverReady) return;
+// card, the card's outline arrow icon (if it has one) goes away and a 54px yellow circle
+// with the arrow rides on the cursor. One follower for every card on the page, fixed to
+// the viewport and moved with clientX/Y (same approach as the white-label mouse follower
+// in js/main.js). Mouse / trackpad only: touch screens keep the static cards.
+function cardsFollower() {
+    if (document.querySelector('.card-follower')) return;
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-    const cards = section.querySelectorAll('.layout363_card, .card-row38_card');
-    if (!cards.length) return;
+    const groups = FOLLOWER_CARDS
+        .map(({ section, cards }) => {
+            const el = document.querySelector(section);
+            return el && { section: el, cards: el.querySelectorAll(cards) };
+        })
+        .filter((group) => group && group.cards.length);
+    if (!groups.length) return;
 
     const follower = document.createElement('div');
-    follower.className = 'store-hover_follower';
+    follower.className = 'card-follower';
     follower.setAttribute('aria-hidden', 'true');
     follower.innerHTML = ARROW_SVG;
     document.body.appendChild(follower);
@@ -38,27 +50,28 @@ function storeCardsHover() {
     const xTo = gsap.quickTo(follower, 'x', { duration: 0.35, ease: 'power3.out' });
     const yTo = gsap.quickTo(follower, 'y', { duration: 0.35, ease: 'power3.out' });
 
-    cards.forEach((card) => {
-        card.addEventListener('pointerenter', (e) => {
-            // Snap to the pointer so it doesn't glide in from the last card it left
-            xTo(e.clientX, e.clientX);
-            yTo(e.clientY, e.clientY);
-            gsap.to(follower, { scale: 1, duration: 0.35, ease: 'power3.out', overwrite: 'auto' });
+    groups.forEach(({ section, cards }) => {
+        cards.forEach((card) => {
+            card.addEventListener('pointerenter', (e) => {
+                // Snap to the pointer so it doesn't glide in from the last card it left
+                xTo(e.clientX, e.clientX);
+                yTo(e.clientY, e.clientY);
+                gsap.to(follower, { scale: 1, duration: 0.35, ease: 'power3.out', overwrite: 'auto' });
+            });
+            card.addEventListener('pointermove', (e) => {
+                xTo(e.clientX);
+                yTo(e.clientY);
+            });
+            card.addEventListener('pointerleave', () => {
+                gsap.to(follower, { scale: 0, duration: 0.25, ease: 'power2.in', overwrite: 'auto' });
+            });
+            card.classList.add('has-card-follower');
         });
-        card.addEventListener('pointermove', (e) => {
-            xTo(e.clientX);
-            yTo(e.clientY);
-        });
-        card.addEventListener('pointerleave', () => {
-            gsap.to(follower, { scale: 0, duration: 0.25, ease: 'power2.in', overwrite: 'auto' });
-        });
+        // Turns on the hover CSS (hidden native cursor + icon fade) only once the follower exists
+        section.classList.add('is-card-follower');
     });
-
-    // Turns on the hover CSS (hidden native cursor + icon fade) only once the follower exists
-    section.classList.add('is-store-hover');
-    section.dataset.storeHoverReady = 'true';
 }
 
 export function homeInit({ runBlocks }) {
-    runBlocks('home', { storeCardsHover });
+    runBlocks('home', { cardsFollower });
 }

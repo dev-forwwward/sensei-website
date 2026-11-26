@@ -1,13 +1,15 @@
 /*
-*   HOMEPAGE — "Built for your entire store" cards: yellow arrow circle on the cursor
+*   HOMEPAGE — yellow arrow circle on the cursor over linked cards
+*   ("Built for your entire store" cards, case studies slider cards)
 *
-*   js/pages/home.js adds the follower (.store-hover_follower, appended to <body>) and
-*   puts .is-store-hover on the section — only on mouse / trackpad devices. Without
-*   that class (touch, or JS not run) the cards keep the normal cursor and icon.
+*   js/pages/home.js adds the follower (.card-follower, appended to <body>), puts
+*   .has-card-follower on each card and .is-card-follower on its section — only on
+*   mouse / trackpad devices. Without them (touch, or JS not run) the cards keep the
+*   normal cursor and icon.
 *   Figma: 54px circle, Sensei yellow, 11.5px arrow.
 */
 
-html[data-wf-page="6ae1d1254629dc4e90df3a93"] .store-hover_follower {
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .card-follower {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -23,17 +25,17 @@ html[data-wf-page="6ae1d1254629dc4e90df3a93"] .store-hover_follower {
 	will-change: transform;
 }
 
-html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .layout363_card,
-html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .card-row38_card {
+/* The circle is the cursor; also covers links inside the card (e.g. a video lightbox) */
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower,
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower * {
 	cursor: none;
 }
 
 /* The card's own outline arrow makes way for the one on the cursor */
-html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .fwd_circle-arrow-wrapper {
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower .fwd_circle-arrow-wrapper {
 	transition: opacity 0.25s ease;
 }
 
-html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .layout363_card:hover .fwd_circle-arrow-wrapper,
-html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .card-row38_card:hover .fwd_circle-arrow-wrapper {
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower:hover .fwd_circle-arrow-wrapper {
 	opacity: 0;
 }
