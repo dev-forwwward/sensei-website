@@ -15,8 +15,10 @@
 //
 // Now the end position is a real element: an empty slot JS adds to the intro section,
 // placed and sized per breakpoint in css/pages/home.css (left of the text on wide
-// screens, centred above it below 1280px). The scroll shrink lands the video exactly on
-// the slot, and every ScrollTrigger refresh (resize, fonts, images) measures it again.
+// screens, above it below 1280px). The scroll shrink lands the video exactly on the
+// slot, and every ScrollTrigger refresh (resize, fonts, images) measures it again.
+// The slot can have any shape (on phones it's a full-width portrait box): the video
+// scales until it covers the slot, and a clip-path crops the overflow, like object-fit.
 function heroVideo() {
     const hero = document.querySelector('.section_home-hero');
     const wrapper = hero?.querySelector('.video-hero-wrapper');
@@ -33,30 +35,35 @@ function heroVideo() {
     container.prepend(slot);
     intro.classList.add('has-video-slot');
 
-    // The slot keeps the video's proportions. The video fills the wrapper; the wrapper's
-    // size is read because ScrollTrigger leaves the pinned video with a fixed px size
-    // from the last refresh. Runs before ScrollTrigger measures anything (refreshInit).
+    // By default the slot keeps the video's proportions (--hero-video-ratio; the CSS can
+    // set its own shape instead). The video fills the wrapper; the wrapper's size is read
+    // because ScrollTrigger leaves the pinned video with a fixed px size from the last
+    // refresh. Runs before ScrollTrigger measures anything (refreshInit).
     const fitSlot = () => {
-        slot.style.aspectRatio = `${wrapper.offsetWidth} / ${wrapper.offsetHeight}`;
+        slot.style.setProperty('--hero-video-ratio', `${wrapper.offsetWidth} / ${wrapper.offsetHeight}`);
     };
     fitSlot();
     ScrollTrigger.addEventListener('refreshInit', fitSlot);
 
-    // Video box (unscaled) vs slot. Scale = width ratio. The x origin puts the scaled
-    // video's left edge on the slot's left edge; y origin stays at the centre, and the pin
-    // lasts exactly the scroll that brings the slot's top to the scaled video's top.
-    // Uses the wrapper (never pinned or scaled), so it's correct mid-pin too.
+    // Video box (unscaled) vs slot. Scale = the smallest that covers the slot; the clip
+    // insets (% of the unscaled box, centred) cut the scaled video down to the slot's size.
+    // The x origin puts the visible left edge on the slot's left edge; y origin stays at
+    // the centre, and the pin lasts exactly the scroll that brings the slot's top to the
+    // visible top. Uses the wrapper (never pinned or scaled), so it's correct mid-pin too.
     const measure = () => {
         const from = wrapper.getBoundingClientRect();
         const to = slot.getBoundingClientRect();
-        const h = from.height;
-        const scale = Math.min(to.width / from.width, 0.99);
+        const { width: w, height: h } = from;
+        const scale = Math.min(Math.max(to.width / w, to.height / h), 0.99);
         const shrink = 1 - scale;
-        const originX = (to.left - from.left) / shrink;
+        const insetX = (1 - to.width / (w * scale)) / 2;
+        const insetY = (1 - to.height / (h * scale)) / 2;
+        const originX = (to.left - from.left - insetX * w * scale) / shrink;
         return {
             scale,
             origin: `${originX}px ${h / 2}px`,
-            distance: Math.max(1, to.top - from.top - (h / 2) * shrink),
+            clip: `inset(${insetY * 100}% ${insetX * 100}% ${insetY * 100}% ${insetX * 100}%)`,
+            distance: Math.max(1, to.top - from.top - (h / 2) * shrink - insetY * h * scale),
         };
     };
 
@@ -73,8 +80,13 @@ function heroVideo() {
     });
     tl.fromTo(
         video,
-        { scale: 1, transformOrigin: () => measure().origin },
-        { scale: () => measure().scale, transformOrigin: () => measure().origin, ease: 'power2.out' }
+        { scale: 1, clipPath: 'inset(0% 0% 0% 0%)', transformOrigin: () => measure().origin },
+        {
+            scale: () => measure().scale,
+            clipPath: () => measure().clip,
+            transformOrigin: () => measure().origin,
+            ease: 'power2.out',
+        }
     );
     if (title) tl.to(title, { opacity: 0, ease: 'power2.out' }, '<');
 
@@ -97,7 +109,7 @@ function killLegacyHeroVideo(video, keep) {
         animation?.revert();
     });
     if (legacy.length && !keep) {
-        gsap.set(video, { clearProps: 'position,top,left,xPercent,yPercent,transformOrigin' });
+        gsap.set(video, { clearProps: 'position,top,left,xPercent,yPercent,transformOrigin,clipPath' });
     }
     return legacy.length > 0;
 }
