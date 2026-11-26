@@ -39,3 +39,53 @@ html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower .fwd_circle-arr
 html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower:hover .fwd_circle-arrow-wrapper {
 	opacity: 0;
 }
+
+/*
+*   HOMEPAGE — where the hero video lands at the end of its scroll shrink
+*
+*   js/pages/home.js (heroVideo) puts an empty .home-intro-video-slot at the top of the
+*   intro's .container-xl and .has-video-slot on the section, then scales the pinned
+*   video onto the slot's box. JS sets the slot's aspect-ratio (= the video's).
+*   ≥1280px: left of the intro text, top edges aligned, up to 425px wide.
+*   <1280px: above the text (the left column is too narrow for it), half the container
+*   wide — lined up with the text's left edge until 992px, centred below that.
+*/
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
+	pointer-events: none;
+}
+
+@media (min-width: 1280px) {
+	html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-video-slot .container-xl {
+		position: relative;
+	}
+
+	/* Space left of the text (.container-l, max 800px, right-aligned) minus a gap */
+	html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: min(26.5625rem, 100% - 50rem - 2.5rem);
+	}
+}
+
+@media (max-width: 1279px) {
+	html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
+		width: 50%;
+		margin: 0 auto 3rem;
+	}
+}
+
+/* Text is still an 800px column on the right here: line the video up with its left edge */
+@media (min-width: 992px) and (max-width: 1279px) {
+	html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
+		margin-left: max(0px, 100% - 50rem);
+	}
+}
+
+/* The Webflow page code reserved 75vw above the text for the video; the slot does it now */
+@media (max-width: 991px) {
+	html[data-wf-page="6ae1d1254629dc4e90df3a93"] .section_home-intro.has-video-slot {
+		padding-top: 0;
+	}
+}

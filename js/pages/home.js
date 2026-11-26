@@ -2,10 +2,105 @@
  * HOMEPAGE
  *
  * Page code that still lives in Webflow (legacy, Page settings > Custom code) is not
- * migrated yet — this module only adds new behaviour.
+ * migrated yet, except the hero video animation (heroVideo below).
  *
  * CSS: css/pages/home.css. GSAP comes from the site footer.
  */
+
+// HOMEPAGE: hero video shrinks into the intro section on scroll
+// Replaces the "Hero animation" block of the Webflow page code
+// (legacy/pages/home/footer.html), which worked out where the video ends from fixed
+// numbers (425px, hero height × 0.5 + 35px, −200px on tablet) once on page load:
+// the video missed the intro text, and after a resize it landed on top of the text.
+//
+// Now the end position is a real element: an empty slot JS adds to the intro section,
+// placed and sized per breakpoint in css/pages/home.css (left of the text on wide
+// screens, centred above it below 1280px). The scroll shrink lands the video exactly on
+// the slot, and every ScrollTrigger refresh (resize, fonts, images) measures it again.
+function heroVideo() {
+    const hero = document.querySelector('.section_home-hero');
+    const wrapper = hero?.querySelector('.video-hero-wrapper');
+    const video = wrapper?.querySelector('.video-hero-wrapper--inner');
+    const intro = document.querySelector('.section_home-intro');
+    const container = intro?.querySelector('.container-xl');
+    if (!video || !container) return;
+
+    killLegacyHeroVideo(video);
+
+    const slot = document.createElement('div');
+    slot.className = 'home-intro-video-slot';
+    slot.setAttribute('aria-hidden', 'true');
+    container.prepend(slot);
+    intro.classList.add('has-video-slot');
+
+    // The slot keeps the video's proportions. The video fills the wrapper; the wrapper's
+    // size is read because ScrollTrigger leaves the pinned video with a fixed px size
+    // from the last refresh. Runs before ScrollTrigger measures anything (refreshInit).
+    const fitSlot = () => {
+        slot.style.aspectRatio = `${wrapper.offsetWidth} / ${wrapper.offsetHeight}`;
+    };
+    fitSlot();
+    ScrollTrigger.addEventListener('refreshInit', fitSlot);
+
+    // Video box (unscaled) vs slot. Scale = width ratio. The x origin puts the scaled
+    // video's left edge on the slot's left edge; y origin stays at the centre, and the pin
+    // lasts exactly the scroll that brings the slot's top to the scaled video's top.
+    // Uses the wrapper (never pinned or scaled), so it's correct mid-pin too.
+    const measure = () => {
+        const from = wrapper.getBoundingClientRect();
+        const to = slot.getBoundingClientRect();
+        const h = from.height;
+        const scale = Math.min(to.width / from.width, 0.99);
+        const shrink = 1 - scale;
+        const originX = (to.left - from.left) / shrink;
+        return {
+            scale,
+            origin: `${originX}px ${h / 2}px`,
+            distance: Math.max(1, to.top - from.top - (h / 2) * shrink),
+        };
+    };
+
+    const title = hero.querySelector('.home-hero-wrapper h1');
+    const tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: wrapper,
+            start: 'top top',
+            end: () => `+=${measure().distance}`,
+            scrub: true,
+            pin: video,
+            invalidateOnRefresh: true,
+        },
+    });
+    tl.fromTo(
+        video,
+        { scale: 1, transformOrigin: () => measure().origin },
+        { scale: () => measure().scale, transformOrigin: () => measure().origin, ease: 'power2.out' }
+    );
+    if (title) tl.to(title, { opacity: 0, ease: 'power2.out' }, '<');
+
+    // Legacy code runs on jQuery ready, normally before this; if it was late, undo it now
+    if (document.readyState !== 'complete') {
+        window.addEventListener('load', () => {
+            if (killLegacyHeroVideo(video, tl.scrollTrigger)) ScrollTrigger.refresh();
+        }, { once: true });
+    }
+}
+
+// Until the "Hero animation" block is deleted from the Webflow page code, both would
+// animate the video: undo the legacy one (its ScrollTrigger pins the same element).
+// Returns true if there was one.
+function killLegacyHeroVideo(video, keep) {
+    const legacy = ScrollTrigger.getAll().filter((trigger) => trigger.pin === video && trigger !== keep);
+    legacy.forEach((trigger) => {
+        const animation = trigger.animation;
+        trigger.kill(true);
+        animation?.revert();
+    });
+    if (legacy.length && !keep) {
+        gsap.set(video, { clearProps: 'position,top,left,xPercent,yPercent,transformOrigin' });
+    }
+    return legacy.length > 0;
+}
 
 // Arrow from the cards' circle-arrow icon (Webflow embed), cropped to the arrow alone.
 // Same 11.5 × 11 px as the arrow in the Figma hover state.
@@ -73,5 +168,5 @@ function cardsFollower() {
 }
 
 export function homeInit({ runBlocks }) {
-    runBlocks('home', { cardsFollower });
+    runBlocks('home', { heroVideo, cardsFollower });
 }
