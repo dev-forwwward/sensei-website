@@ -1,0 +1,39 @@
+/*
+*   HOMEPAGE — "Built for your entire store" cards: yellow arrow circle on the cursor
+*
+*   js/pages/home.js adds the follower (.store-hover_follower, appended to <body>) and
+*   puts .is-store-hover on the section — only on mouse / trackpad devices. Without
+*   that class (touch, or JS not run) the cards keep the normal cursor and icon.
+*   Figma: 54px circle, Sensei yellow, 11.5px arrow.
+*/
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .store-hover_follower {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 999; /* above the cards, under the navbar (.w-nav is 1000) */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 3.375rem;
+	height: 3.375rem;
+	border-radius: 50%;
+	background-color: var(--colors--yellow, #f8fd8f);
+	pointer-events: none;
+	will-change: transform;
+}
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .layout363_card,
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .card-row38_card {
+	cursor: none;
+}
+
+/* The card's own outline arrow makes way for the one on the cursor */
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .fwd_circle-arrow-wrapper {
+	transition: opacity 0.25s ease;
+}
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .layout363_card:hover .fwd_circle-arrow-wrapper,
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] .is-store-hover .card-row38_card:hover .fwd_circle-arrow-wrapper {
+	opacity: 0;
+}
