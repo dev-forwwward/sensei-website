@@ -12,6 +12,7 @@ const modules = [
     { path: 'footer-date', exportName: 'footerDate' },
     { path: 'works', exportName: 'works' },
     { path: 'navbar-mobile', exportName: 'navbarMobile' }, // Relume navbar6 ≤991px (css/navbar-mobile.css)
+    { path: 'navbar-desktop', exportName: 'navbarDesktop' }, // ≥992px: hide bar at the footer (css/navbar-desktop.css)
 
     // FWD white-label modules disabled while the legacy code is live:
     // { path: 'main', exportName: 'mainInit' },     // Lenis fights legacy jQuery/window scrollTo + ScrollTrigger pins; needs Lenis + Fancybox libs

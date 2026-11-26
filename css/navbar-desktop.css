@@ -1,0 +1,30 @@
+/*
+ * Desktop navbar (≥992px) — slides away once the page reaches the footer.
+ * html.is-nav-at-footer is toggled by js/navbar-desktop.js.
+ */
+
+@media screen and (min-width: 992px) {
+
+    .nav-bar-wrapper {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+
+    html.is-nav-at-footer .nav-bar-wrapper {
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Keyboard users tabbing into the bar get it back */
+    html.is-nav-at-footer .nav-bar-wrapper:focus-within {
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-bar-wrapper {
+        transition: none;
+    }
+}
