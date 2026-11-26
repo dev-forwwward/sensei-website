@@ -570,6 +570,7 @@ function footerAndNav() {
     const scrollPercent = (scrollTop + winHeight) / docHeight;
 
     const targetElement = document.querySelector('.navigation-desktop');
+    if (!targetElement) return; // new navbar pages: no .navigation-desktop (see js/navbar-desktop.js)
 
    	if (scrollPercent > 0.95) {
       targetElement.classList.add('no-pointer-events');

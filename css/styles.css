@@ -7,6 +7,9 @@
 /* Mobile / tablet navbar (Relume navbar6, ≤991px) — Figma "menu mobile" */
 @import url('navbar-mobile.css?v=b5267ab8');
 
+/* Desktop navbar (≥992px) — hides when the page reaches the footer */
+@import url('navbar-desktop.css?v=cfc81675');
+
 /* Vendor CSS that pages used to link in their own head code (exact versions; harmless
    on pages without these components). Was after the site head CSS, so it comes after
    legacy-site.css here too. */
