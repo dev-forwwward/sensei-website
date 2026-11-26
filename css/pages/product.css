@@ -75,3 +75,51 @@ html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .testimonial51_slider .w-slider-ar
 	white-space: nowrap;
 	color: var(--colors--olive-40);
 }
+
+/*
+*   PRODUCT — hero video (Relume header82; js/pages/product.js heroVideo)
+*
+*   The box's shape changes with the viewport, so the poster image and the video are
+*   both contained (never cropped, and the poster lines up with the video's first
+*   paint) on a background that matches the video's own, which hides the bars.
+*   Change the colour here if a new video has a different background.
+*/
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .section_header82 .header82_lightbox {
+	background-color: #e9e9df; /* the video's own background, as browsers render it */
+}
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .section_header82 .header82_lightbox-image {
+	object-fit: contain;
+}
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .hero-video_video {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .hero-video_play {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--colors--black); /* the icon was dark inside the Webflow link (a { color }) */
+	cursor: pointer;
+}
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .hero-video_play:focus-visible .lightbox-play-icon {
+	outline: 2px solid currentColor;
+	outline-offset: 4px;
+	border-radius: 50%;
+}
+
+html[data-wf-page="6aeb1c30a345c0ff0c02c6f7"] .hero-video.is-playing .hero-video_play {
+	display: none;
+}

@@ -128,9 +128,76 @@ function cardsSliderEnd() {
     });
 }
 
+// PRODUCT: hero video ("Your stores, answering back." — Relume header82)
+// Everything is set in the Webflow Designer, on the hero's Lightbox Link
+// (header82_lightbox):
+//   - Video: Settings > Custom attributes > fwd-video-src = the .mp4 URL. Upload the
+//     file in the Assets panel (mp4, up to 30 MB) and copy its link from there.
+//   - Poster: the image inside it (header82_lightbox-image), Image settings > Replace.
+//   - Play icon: lightbox-play-icon, as is.
+// With fwd-video-src set, the video plays in place of the image: poster until the play
+// icon is clicked, then it plays with sound and native controls. It only downloads on
+// play (preload="none") and pauses when the hero scrolls out of view. Without the
+// attribute nothing changes and the Webflow lightbox behaves as configured.
+function heroVideo() {
+    const link = document.querySelector('.section_header82 .header82_lightbox');
+    if (!link || link.dataset.videoReady) return;
+    const src = link.getAttribute('fwd-video-src')?.trim();
+    if (!src) return;
+    const image = link.querySelector('.header82_lightbox-image');
+
+    // A plain div instead of the Webflow lightbox link: the lightbox has no items, and
+    // its click handler would open an empty overlay. Dropping the node drops the handler.
+    const box = document.createElement('div');
+    box.className = 'header82_lightbox hero-video';
+    box.dataset.videoReady = 'true';
+
+    const video = document.createElement('video');
+    video.className = 'hero-video_video';
+    video.src = src;
+    if (image?.src) video.poster = image.src; // full-size file, not a srcset variant
+    video.preload = 'none';
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('aria-label', 'Neptune by Sensei product video');
+
+    // The Webflow play icon, inside a real button so it's keyboard reachable
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'hero-video_play';
+    button.setAttribute('aria-label', 'Play video');
+    const icon = link.querySelector('.lightbox-play-icon');
+    if (icon) button.appendChild(icon);
+
+    box.append(video, button);
+    link.replaceWith(box);
+
+    const start = () => {
+        box.classList.add('is-playing');
+        video.controls = true;
+        video.play().catch(() => {});
+    };
+    const reset = () => {
+        box.classList.remove('is-playing');
+        video.controls = false;
+    };
+
+    button.addEventListener('click', start);
+    video.addEventListener('ended', () => {
+        reset();
+        video.load(); // back to the poster frame
+    });
+
+    // Don't keep playing (with sound) once the hero is off screen
+    new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting && !video.paused) video.pause();
+    }).observe(box);
+}
+
 // runBlocks is passed in by script-loader.js (utils/helpers.js)
 export function productInit({ runBlocks }) {
     runBlocks('product', {
+        heroVideo,
         rotatingWords,
         cardsSliderEnd,
     });
