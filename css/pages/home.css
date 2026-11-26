@@ -39,3 +39,62 @@ html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower .fwd_circle-arr
 html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower:hover .fwd_circle-arrow-wrapper {
 	opacity: 0;
 }
+
+
+/*
+*   HOMEPAGE — case studies slider (CMS Collection List, Clients)
+*
+*   Replaces the Webflow Slider (which can't hold a Collection List). Webflow:
+*   [data-cases-slider] > Collection List (.gallery20_mask > .gallery20_slide items with
+*   a .header94_card link) + arrows (.slider-arrow-2, [data-cases-prev]/[data-cases-next])
+*   + nav (.gallery20_slide-nav, [data-cases-nav]). js/pages/home.js runs Swiper on it.
+*   The list is a row from the start (first card in place, the next one peeking in, like
+*   the old slider), so nothing jumps when Swiper takes over.
+*/
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] {
+	position: relative;
+	padding-bottom: 5rem; /* room for arrows + nav, as on .gallery20_slider */
+}
+
+/* Swiper's .swiper hides overflow; the old slider let the next card peek in */
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] .gallery20_mask {
+	overflow: visible;
+}
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] .w-dyn-items {
+	display: flex;
+}
+
+/* Every slide as tall as the tallest, card fills it */
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] .gallery20_slide {
+	flex: 0 0 100%;
+	height: auto;
+}
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] .header94_card {
+	height: 100%;
+}
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] .slider-arrow-2 {
+	position: absolute;
+	z-index: 3;
+	cursor: pointer;
+}
+
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] .slider-arrow-2.is-disabled {
+	opacity: 0.3;
+	cursor: default;
+}
+
+/* Swiper's bullet styles would fight Webflow's .w-slider-dot ones */
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider] .gallery20_slide-nav {
+	width: auto;
+	transform: none;
+}
+
+/* Only one case study: no arrows or nav */
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider].is-static .slider-arrow-2,
+html[data-wf-page="6ae1d1254629dc4e90df3a93"] [data-cases-slider].is-static .gallery20_slide-nav {
+	display: none;
+}

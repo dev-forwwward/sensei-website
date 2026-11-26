@@ -72,6 +72,58 @@ function cardsFollower() {
     });
 }
 
-export function homeInit({ runBlocks }) {
-    runBlocks('home', { cardsFollower });
+// HOMEPAGE: case studies slider, fed by the CMS (Clients collection)
+// Webflow's Slider can't hold a Collection List, so the section has a plain wrapper
+// [data-cases-slider] with the Collection List (.gallery20_mask), two arrows
+// [data-cases-prev]/[data-cases-next] (.slider-arrow-2) and a nav [data-cases-nav]
+// (.gallery20_slide-nav). Swiper turns the list into the slider; the nav gets Webflow's
+// slider-dot classes so it looks like the old Webflow slider. Add, remove or reorder
+// case studies in the CMS (list sorted by opening date, newest first).
+const SWIPER_URL = 'https://cdn.jsdelivr.net/npm/swiper@14.4.0/swiper-bundle.min.js';
+
+async function casesSlider(loadScript) {
+    const root = document.querySelector('[data-cases-slider]');
+    if (!root || root.dataset.casesReady) return;
+    root.dataset.casesReady = 'true';
+
+    const list = root.querySelector('.w-dyn-list');
+    const track = list?.querySelector('.w-dyn-items');
+    const slides = track ? [...track.children] : [];
+    const prev = root.querySelector('[data-cases-prev]');
+    const next = root.querySelector('[data-cases-next]');
+    const nav = root.querySelector('[data-cases-nav]');
+
+    // One case study (or none): nothing to slide
+    if (slides.length < 2) {
+        root.classList.add('is-static');
+        return;
+    }
+
+    await loadScript(SWIPER_URL);
+
+    list.classList.add('swiper');
+    track.classList.add('swiper-wrapper');
+    slides.forEach((slide) => slide.classList.add('swiper-slide'));
+    nav?.classList.add('w-slider-nav', 'w-slider-nav-invert', 'w-round');
+
+    new Swiper(list, {
+        slidesPerView: 1,
+        speed: 500, // same as the old Webflow slider
+        navigation: { prevEl: prev, nextEl: next, disabledClass: 'is-disabled' },
+        pagination: nav && {
+            el: nav,
+            clickable: true,
+            bulletClass: 'w-slider-dot',
+            bulletActiveClass: 'w-active',
+            renderBullet: (index, className) => `<div class="${className}"></div>`,
+        },
+        a11y: { prevSlideMessage: 'Previous case study', nextSlideMessage: 'Next case study' },
+    });
+}
+
+export function homeInit({ runBlocks, loadScript }) {
+    runBlocks('home', {
+        cardsFollower,
+        casesSlider: () => casesSlider(loadScript),
+    });
 }
