@@ -25,6 +25,7 @@ const modules = [
 // CMS items carry their template's id. Run after the site-wide modules
 // (page code used to come after the site footer code).
 const pages = {
+    '6ae1d1254629dc4e90df3a93': { path: 'pages/home', exportName: 'homeInit' }, // / (homepage)
     '6ae1d1264629dc4e90df3ab1': { path: 'pages/careers', exportName: 'careersInit' }, // /careers
     '6aec7413ae73f59f7e35fef4': { path: 'pages/how-it-works', exportName: 'howItWorksInit' }, // /how-it-works
     '6aff32ae018246d1af34fa21': { path: 'pages/fwd-teams', exportName: 'fwdTeamsInit' }, // /fwd-teams/* (CMS template)
