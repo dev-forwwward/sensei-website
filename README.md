@@ -123,6 +123,12 @@ _Entire file is commented out — not currently active or wired into `script-loa
 - Initialize
 - Run scroll logic on load in case page is opened mid-scroll
 
+### [`js/navbar-desktop.js`](js/navbar-desktop.js) — `navbarDesktop()`
+
+- over the footer after the page content has scrolled away. As soon as the bottom of
+- css/navbar-desktop.css.
+- offsetHeight ignores the hide transform, so the threshold stays put while hidden
+
 ### [`js/navbar-mobile.js`](js/navbar-mobile.js) — `navbarMobile()`
 
 - of Webflow's w-nav / w-dropdown. Look & feel is in css/navbar-mobile.css.
@@ -156,6 +162,19 @@ _No inline section comments found — see source for details._
 ### [`js/pages/fwd-teams.js`](js/pages/fwd-teams.js) — `fwdTeamsInit()`
 
 - level with its text block. The CSS turns the progress into the column's offset.
+
+### [`js/pages/home.js`](js/pages/home.js) — `homeInit()`
+
+- HOMEPAGE: hero video shrinks into the intro section on scroll
+- Replaces the "Hero animation" block of the Webflow page code
+- the video missed the intro text, and after a resize it landed on top of the text.
+- Now the end position is a real element: an empty slot JS adds to the intro section,
+- scales until it covers the slot, and a clip-path crops the overflow, like object-fit.
+- because ScrollTrigger leaves the pinned video with a fixed px size from the last
+- the centre, and the pin lasts exactly the scroll that brings the slot's top to the
+- Until the "Hero animation" block is deleted from the Webflow page code, both would
+- Returns true if there was one.
+- Same 11.5 × 11 px as the arrow in the Figma hover state.
 
 ### [`js/pages/how-it-works.js`](js/pages/how-it-works.js) — `howItWorksInit()`
 
@@ -211,6 +230,10 @@ Imported by `css/styles.css`.
 
 _Not currently imported by `css/styles.css` — verify it is still in use._
 
+### [`css/navbar-desktop.css`](css/navbar-desktop.css)
+
+Imported by `css/styles.css`.
+
 ### [`css/navbar-mobile.css`](css/navbar-mobile.css)
 
 Imported by `css/styles.css`.
@@ -224,6 +247,10 @@ Root stylesheet.
 Imported by `css/styles.css`.
 
 ### [`css/pages/fwd-teams.css`](css/pages/fwd-teams.css)
+
+Imported by `css/styles.css`.
+
+### [`css/pages/home.css`](css/pages/home.css)
 
 Imported by `css/styles.css`.
 
