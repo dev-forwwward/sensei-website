@@ -45,13 +45,16 @@ html[data-wf-page="6ae1d1254629dc4e90df3a93"] .has-card-follower:hover .fwd_circ
 *
 *   js/pages/home.js (heroVideo) puts an empty .home-intro-video-slot at the top of the
 *   intro's .container-xl and .has-video-slot on the section, then scales the pinned
-*   video onto the slot's box. JS sets the slot's aspect-ratio (= the video's).
+*   video onto the slot's box (cropping it with clip-path when the shapes differ).
+*   JS sets --hero-video-ratio (= the video's, i.e. the viewport's) as the default shape.
 *   ≥1280px: left of the intro text, top edges aligned, up to 425px wide.
 *   <1280px: above the text (the left column is too narrow for it), half the container
 *   wide — lined up with the text's left edge until 992px, centred below that.
+*   ≤767px: full container width, 2:3 portrait box (cropped from the video).
 */
 
 html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
+	aspect-ratio: var(--hero-video-ratio, 16 / 9);
 	pointer-events: none;
 }
 
@@ -80,6 +83,16 @@ html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
 @media (min-width: 992px) and (max-width: 1279px) {
 	html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
 		margin-left: max(0px, 100% - 50rem);
+	}
+}
+
+/* Phones: full-width portrait box; never taller than most of the screen (landscape) */
+@media (max-width: 767px) {
+	html[data-wf-page="6ae1d1254629dc4e90df3a93"] .home-intro-video-slot {
+		width: 100%;
+		max-height: 75svh;
+		aspect-ratio: 2 / 3;
+		margin-bottom: 2rem;
 	}
 }
 
